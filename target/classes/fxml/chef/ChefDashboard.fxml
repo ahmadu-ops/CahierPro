@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" styleClass="dashboard-container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.chef.ChefDashboardController">
+   <left>
+      <VBox prefHeight="700.0" prefWidth="250.0" styleClass="sidebar" BorderPane.alignment="CENTER">
+         <children>
+            <StackPane prefHeight="120.0" styleClass="sidebar-header">
+               <children>
+                  <VBox alignment="CENTER" spacing="10.0">
+                     <children>
+                        <StackPane maxHeight="60.0" maxWidth="60.0" styleClass="logo-container">
+                           <children>
+                              <SVGPath content="M24,3.25C24,3.25,24,3.25,24,3.25C26.14,3.25 27.87,4.98 27.87,7.12C27.87,8.93 26.64,10.45 24.97,10.88C25.15,11.29 25.37,11.68 25.61,12.04C26.47,13.21 27.73,13.89 29.13,13.89V17.59C26.41,17.59 24.01,16.33 22.5,14.28C20.99,16.33 18.59,17.59 15.87,17.59V13.89C17.27,13.89 18.53,13.21 19.39,12.04C19.63,11.68 19.85,11.29 20.03,10.88C18.36,10.45 17.13,8.93 17.13,7.12C17.13,4.98 18.86,3.25 21,3.25M24,5.37C24,5.37,24,5.37,24,5.37C23.04,5.37 22.25,6.15 22.25,7.12C22.25,8.08 23.04,8.87 24,8.87C24.96,8.87 25.75,8.08 25.75,7.12C25.75,6.15 24.96,5.37 24,5.37M30.96,9.37C30.91,9.51 30.87,9.66 30.87,9.81C30.87,10.79 31.66,11.58 32.62,11.58C33.59,11.58 34.37,10.79 34.37,9.81C34.37,8.85 33.59,8.06 32.62,8.06C32.35,8.06 32.09,8.12 31.87,8.23C31.37,5.61 29.25,3.25 26.13,3.25V5.37C28.25,5.37 30.18,7.05 30.96,9.37M12.13,3.25V5.37C10.01,5.37 8.08,7.05 7.3,9.37C7.35,9.51 7.38,9.66 7.38,9.81C7.38,10.79 6.59,11.58 5.62,11.58C4.66,11.58 3.87,10.79 3.87,9.81C3.87,8.85 4.66,8.06 5.62,8.06C5.89,8.06 6.15,8.12 6.37,8.23C6.88,5.61 9,3.25 12.13,3.25M13.5,14.28C12.93,13.5 12.53,12.61 12.33,11.66C13.17,11.23 13.96,10.69 14.66,10.07C13.66,9.62 12.87,8.75 12.52,7.65C11.67,9.91 9.9,11.4 8.13,11.62V15.07C9.9,15.27 11.5,16.24 12.54,17.77C14.79,17.92 16.88,18.87 18.44,20.4V20.18C18.44,17.73 16.54,15.16 13.5,14.28Z" fill="#0a6d4c" scaleX="1.2" scaleY="1.2" />
+                           </children>
+                        </StackPane>
+                        <Label styleClass="app-title-sidebar" text="Cahier de Texte" />
+                        <Label styleClass="role-label" text="Chef de Département" />
+                     </children>
+                  </VBox>
+               </children>
+            </StackPane>
+            <VBox prefHeight="500.0" spacing="5.0" styleClass="sidebar-menu">
+               <children>
+                  <Label styleClass="menu-section-label" text="MENU PRINCIPAL">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="15.0" top="15.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Button fx:id="dashboardBtn" alignment="BASELINE_LEFT" graphicTextGap="15.0" mnemonicParsing="false" onAction="#handleDashboardAction" prefHeight="45.0" prefWidth="250.0" styleClass="menu-button-active" text="Tableau de bord">
+                     <graphic>
+                        <SVGPath content="M13,3V9H21V3M13,21H21V11H13M3,21H11V15H3M3,13H11V3H3V13Z" styleClass="menu-icon" />
+                     </graphic>
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding>
+                  </Button>
+                  <Button fx:id="usersBtn" alignment="BASELINE_LEFT" graphicTextGap="15.0" mnemonicParsing="false" onAction="#handleUsersAction" prefHeight="45.0" prefWidth="250.0" styleClass="menu-button" text="Gestion Utilisateurs">
+                     <graphic>
+                        <SVGPath content="M16 17V19H2V17S2 13 9 13 16 17 16 17M12.5 7.5A3.5 3.5 0 1 0 9 11A3.5 3.5 0 0 0 12.5 7.5M15.94 13A5.32 5.32 0 0 1 18 17V19H22V17S22 13.37 15.94 13M15 4A3.39 3.39 0 0 0 13.07 4.59A5 5 0 0 1 13.07 10.41A3.39 3.39 0 0 0 15 11A3.5 3.5 0 0 0 15 4Z" styleClass="menu-icon" />
+                     </graphic>
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding>
+                  </Button>
+                  <Button fx:id="coursesBtn" alignment="BASELINE_LEFT" graphicTextGap="15.0" mnemonicParsing="false" onAction="#handleCoursesAction" prefHeight="45.0" prefWidth="250.0" styleClass="menu-button" text="Gestion Cours">
+                     <graphic>
+                        <SVGPath content="M18 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V4C20 2.9 19.1 2 18 2M6 4H11V12L8.5 10.5L6 12V4Z" styleClass="menu-icon" />
+                     </graphic>
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding>
+                  </Button>
+                  <Button fx:id="fichesBtn" alignment="BASELINE_LEFT" graphicTextGap="15.0" mnemonicParsing="false" onAction="#handleFichesAction" prefHeight="45.0" prefWidth="250.0" styleClass="menu-button" text="Fiches Pédagogiques">
+                     <graphic>
+                        <SVGPath content="M6,2H18A2,2 0 0,1 20,4V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V4A2,2 0 0,1 6,2M6,4V8H18V4H6M6,10V12H18V10H6M6,14V16H13V14H6M6,18V20H15V18H6" styleClass="menu-icon" />
+                     </graphic>
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding>
+                  </Button>
+               </children>
+            </VBox>
+            <VBox alignment="BOTTOM_CENTER" prefHeight="80.0" styleClass="sidebar-footer" VBox.vgrow="ALWAYS">
+               <children>
+                  <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="user-info">
+                     <children>
+                        <StackPane maxHeight="40.0" maxWidth="40.0" styleClass="user-avatar">
+                           <children>
+                              <SVGPath content="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
+                           </children>
+                        </StackPane>
+                        <VBox spacing="2.0">
+                           <children>
+                              <Label fx:id="userNameLabel" styleClass="user-name" text="Nom d'utilisateur" />
+                              <Label styleClass="user-role" text="Chef de département" />
+                           </children>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+                     </padding>
+                  </HBox>
+                  <Button fx:id="logoutBtn" alignment="BASELINE_LEFT" graphicTextGap="15.0" mnemonicParsing="false" onAction="#handleLogout" prefHeight="45.0" prefWidth="250.0" styleClass="logout-button" text="Déconnexion">
+                     <graphic>
+                        <SVGPath content="M16,17V14H9V10H16V7L21,12L16,17M14,2A2,2 0 0,1 16,4V6H14V4H5V20H14V18H16V20A2,2 0 0,1 14,22H5A2,2 0 0,1 3,20V4A2,2 0 0,1 5,2H14Z" styleClass="menu-icon" />
+                     </graphic>
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding>
+                  </Button>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </left>
+   <center>
+      <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <BorderPane fx:id="contentArea" prefHeight="200.0" prefWidth="200.0">
+               <top>
+                  <HBox alignment="CENTER_LEFT" prefHeight="80.0" spacing="20.0" styleClass="content-header" BorderPane.alignment="CENTER">
+                     <children>
+                        <Label fx:id="pageTitle" styleClass="page-title" text="Tableau de Bord" />
+                     </children>
+                     <padding>
+                        <Insets left="30.0" right="30.0" />
+                     </padding>
+                  </HBox>
+               </top>
+               <center>
+                  <StackPane fx:id="dashboardView" prefHeight="150.0" prefWidth="200.0" styleClass="dashboard-view" BorderPane.alignment="CENTER">
+                     <children>
+                        <VBox alignment="TOP_CENTER" spacing="20.0">
+                           <children>
+                              <HBox alignment="CENTER" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="CENTER" prefHeight="120.0" prefWidth="200.0" styleClass="dashboard-card">
+                                       <children>
+                                          <StackPane styleClass="card-icon-container">
+                                             <children>
+                                                <SVGPath content="M16 17V19H2V17S2 13 9 13 16 17 16 17M12.5 7.5A3.5 3.5 0 1 0 9 11A3.5 3.5 0 0 0 12.5 7.5M15.94 13A5.32 5.32 0 0 1 18 17V19H22V17S22 13.37 15.94 13M15 4A3.39 3.39 0 0 0 13.07 4.59A5 5 0 0 1 13.07 10.41A3.39 3.39 0 0 0 15 11A3.5 3.5 0 0 0 15 4Z" styleClass="card-icon" />
+                                             </children>
+                                          </StackPane>
+                                          <Label styleClass="card-title" text="Utilisateurs" />
+                                          <Label fx:id="usersCountLabel" styleClass="card-value" text="12" />
+                                          <Label styleClass="card-description" text="Enseignants et responsables" />
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                       </padding>
+                                    </VBox>
+                                    <VBox alignment="CENTER" prefHeight="120.0" prefWidth="200.0" styleClass="dashboard-card">
+                                       <children>
+                                          <StackPane styleClass="card-icon-container">
+                                             <children>
+                                                <SVGPath content="M18 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V4C20 2.9 19.1 2 18 2M6 4H11V12L8.5 10.5L6 12V4Z" styleClass="card-icon" />
+                                             </children>
+                                          </StackPane>
+                                          <Label styleClass="card-title" text="Cours" />
+                                          <Label fx:id="coursesCountLabel" styleClass="card-value" text="24" />
+                                          <Label styleClass="card-description" text="Cours disponibles" />
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                       </padding>
+                                    </VBox>
+                                    <VBox alignment="CENTER" prefHeight="120.0" prefWidth="200.0" styleClass="dashboard-card">
+                                       <children>
+                                          <StackPane styleClass="card-icon-container">
+                                             <children>
+                                                <SVGPath content="M6,2H18A2,2 0 0,1 20,4V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V4A2,2 0 0,1 6,2M6,4V8H18V4H6M6,10V12H18V10H6M6,14V16H13V14H6M6,18V20H15V18H6" styleClass="card-icon" />
+                                             </children>
+                                          </StackPane>
+                                          <Label styleClass="card-title" text="Fiches" />
+                                          <Label fx:id="fichesCountLabel" styleClass="card-value" text="36" />
+                                          <Label styleClass="card-description" text="Fiches pédagogiques générées" />
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                       </padding>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <VBox prefHeight="400.0" prefWidth="100.0" styleClass="dashboard-card" VBox.vgrow="ALWAYS">
+                                 <children>
+                                    <Label styleClass="card-section-title" text="Actions rapides">
+                                       <VBox.margin>
+                                          <Insets bottom="15.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <HBox spacing="15.0">
+                                       <children>
+                                          <Button mnemonicParsing="false" onAction="#handleNewUserAction" prefHeight="40.0" prefWidth="150.0" styleClass="action-button" text="Nouvel Utilisateur">
+                                             <graphic>
+                                                <SVGPath content="M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z" fill="WHITE" />
+                                             </graphic>
+                                          </Button>
+                                          <Button mnemonicParsing="false" onAction="#handleNewCourseAction" prefHeight="40.0" prefWidth="150.0" styleClass="action-button" text="Nouveau Cours">
+                                             <graphic>
+                                                <SVGPath content="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" fill="WHITE" />
+                                             </graphic>
+                                          </Button>
+                                          <Button mnemonicParsing="false" onAction="#handleGenerateFicheAction" prefHeight="40.0" prefWidth="170.0" styleClass="action-button" text="Générer une Fiche">
+                                             <graphic>
+                                                <SVGPath content="M14,2L20,8V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V4A2,2 0 0,1 6,2H14M18,20V9H13V4H6V20H18M12,12L16,16H13.5V19H10.5V16H8L12,12Z" fill="WHITE" />
+                                             </graphic>
+                                          </Button>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="30.0" left="30.0" right="30.0" top="20.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                  </StackPane>
+               </center>
+            </BorderPane>
+         </children>
+      </StackPane>
+   </center>
+</BorderPane>

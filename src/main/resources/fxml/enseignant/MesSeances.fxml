@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
+
+<VBox spacing="20.0" styleClass="container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.enseignant.MesSeancesController">
+   <children>
+      <HBox alignment="CENTER_LEFT" spacing="15.0">
+         <children>
+            <Label styleClass="section-title" text="Mes séances de cours" />
+            <Button fx:id="ajouterSeanceButton" mnemonicParsing="false" onAction="#handleAjouterSeance" prefHeight="40.0" styleClass="action-button" text="Ajouter une Séance">
+               <graphic>
+                  <SVGPath content="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" fill="WHITE" />
+               </graphic>
+            </Button>
+         </children>
+      </HBox>
+      <TableView fx:id="seancesTableView" prefHeight="500.0" VBox.vgrow="ALWAYS">
+        <columns>
+          <TableColumn fx:id="dateColumn" prefWidth="120.0" text="Date" />
+          <TableColumn fx:id="coursColumn" prefWidth="200.0" text="Cours" />
+          <TableColumn fx:id="classeColumn" prefWidth="150.0" text="Classe" />
+          <TableColumn fx:id="dureeColumn" prefWidth="80.0" text="Durée (min)" />
+          <TableColumn fx:id="contenuColumn" prefWidth="250.0" text="Contenu" />
+          <TableColumn fx:id="statutColumn" prefWidth="100.0" text="Statut" />
+        </columns>
+      </TableView>
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>

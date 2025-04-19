@@ -1,0 +1,121 @@
+/* Fichier : src/main/resources/css/login.css */
+
+/* ----- COULEURS PRINCIPALES ----- */
+/* Bleu profond: #131C3D */
+/* Gris clair: #D1D5DE */
+/* Vert accent: #0a6d4c */
+/* Vert survol: #14906a */
+/* Blanc texte: #FFFFFF */
+/* Gris bordure: #a9adb8 */
+
+/* ----- MISE EN PAGE PRINCIPALE ----- */
+.login-container {
+    -fx-background-color: #FFFFFF;
+}
+
+/* ----- PANNEAU LATÉRAL ----- */
+.login-sidebar {
+    -fx-background-color: #131C3D;
+    -fx-padding: 20px;
+}
+
+.logo-container {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-background-radius: 100;
+    -fx-padding: 20px;
+}
+
+.app-title-light {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFFFFF;
+}
+
+.app-subtitle-light {
+    -fx-font-size: 14px;
+    -fx-text-fill: #D1D5DE;
+}
+
+/* ----- FORMULAIRE DE CONNEXION ----- */
+.login-form {
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 30px;
+}
+
+.login-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #131C3D;
+}
+
+.input-container {
+    -fx-spacing: 5px;
+    -fx-padding: 5px 0;
+}
+
+.input-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #131C3D;
+}
+
+.input-field {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #a9adb8;
+    -fx-border-radius: 4px;
+    -fx-padding: 8px 10px;
+}
+
+.input-field:focused {
+    -fx-border-color: #0a6d4c;
+}
+
+.transparent-input {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.icon-container {
+    -fx-fill: #a9adb8;
+}
+
+/* ----- BOUTONS ----- */
+.primary-button {
+    -fx-background-color: #0a6d4c;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+}
+
+.primary-button:hover {
+    -fx-background-color: #14906a;
+}
+
+.primary-button:pressed {
+    -fx-background-color: #085940;
+}
+
+/* ----- TEXTES AUXILIAIRES ----- */
+.error-label {
+    -fx-text-fill: #e74c3c;
+    -fx-font-size: 12px;
+}
+
+.help-text {
+    -fx-text-fill: #a9adb8;
+    -fx-font-size: 12px;
+}
+
+/* ----- ANIMATIONS ----- */
+.login-form .input-field {
+    -fx-transition: -fx-border-color 0.3s ease;
+}
+
+.primary-button {
+    -fx-transition: -fx-background-color 0.2s ease;
+}

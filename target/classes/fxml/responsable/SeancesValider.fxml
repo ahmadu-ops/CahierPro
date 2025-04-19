@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="20.0" styleClass="container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.responsable.SeancesValiderController">
+   <children>
+      <VBox spacing="10.0">
+         <children>
+            <Label styleClass="section-title" text="Séances en attente de validation" />
+            <HBox alignment="CENTER_LEFT" spacing="15.0">
+               <children>
+                  <Label text="Filtrer par cours:" />
+                  <ComboBox fx:id="coursNonValideesComboBox" prefHeight="40.0" prefWidth="250.0" promptText="Tous les cours" />
+               </children>
+            </HBox>
+            <TableView fx:id="seancesNonValideesTableView" prefHeight="250.0">
+              <columns>
+                <TableColumn fx:id="dateColumn1" prefWidth="100.0" text="Date" />
+                <TableColumn fx:id="coursColumn1" prefWidth="150.0" text="Cours" />
+                <TableColumn fx:id="enseignantColumn1" prefWidth="150.0" text="Enseignant" />
+                <TableColumn fx:id="dureeColumn1" prefWidth="70.0" text="Durée" />
+                <TableColumn fx:id="contenuColumn1" prefWidth="200.0" text="Contenu" />
+                <TableColumn fx:id="actionsColumn1" prefWidth="150.0" text="Actions" />
+              </columns>
+            </TableView>
+         </children>
+      </VBox>
+      
+      <Separator />
+      
+      <VBox spacing="10.0">
+         <children>
+            <Label styleClass="section-title" text="Historique des séances validées" />
+            <HBox alignment="CENTER_LEFT" spacing="15.0">
+               <children>
+                  <Label text="Filtrer par cours:" />
+                  <ComboBox fx:id="coursValideesComboBox" prefHeight="40.0" prefWidth="250.0" promptText="Tous les cours" />
+               </children>
+            </HBox>
+            <TableView fx:id="seancesValideesTableView" prefHeight="250.0">
+              <columns>
+                <TableColumn fx:id="dateColumn2" prefWidth="100.0" text="Date" />
+                <TableColumn fx:id="coursColumn2" prefWidth="150.0" text="Cours" />
+                <TableColumn fx:id="enseignantColumn2" prefWidth="150.0" text="Enseignant" />
+                <TableColumn fx:id="dureeColumn2" prefWidth="70.0" text="Durée" />
+                <TableColumn fx:id="contenuColumn2" prefWidth="250.0" text="Contenu" />
+                <TableColumn fx:id="actionsColumn2" prefWidth="100.0" text="Actions" />
+              </columns>
+            </TableView>
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>

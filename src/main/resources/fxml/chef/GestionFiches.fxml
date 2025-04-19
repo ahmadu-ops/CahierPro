@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
+
+<VBox spacing="20.0" styleClass="container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.chef.GestionFichesController">
+   <children>
+      <HBox alignment="CENTER_LEFT" spacing="15.0">
+         <children>
+            <Label styleClass="section-title" text="Fiches pédagogiques générées" />
+            <Button fx:id="genererFicheButton" mnemonicParsing="false" onAction="#handleGenererFiche" prefHeight="40.0" styleClass="action-button" text="Générer une Fiche">
+               <graphic>
+                  <SVGPath content="M14,2L20,8V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V4A2,2 0 0,1 6,2H14M18,20V9H13V4H6V20H18M12,12L16,16H13.5V19H10.5V16H8L12,12Z" fill="WHITE" />
+               </graphic>
+            </Button>
+         </children>
+      </HBox>
+      <TableView fx:id="fichesTableView" prefHeight="500.0" VBox.vgrow="ALWAYS">
+        <columns>
+          <TableColumn fx:id="dateColumn" prefWidth="120.0" text="Date de génération" />
+          <TableColumn fx:id="coursColumn" prefWidth="200.0" text="Cours" />
+          <TableColumn fx:id="enseignantColumn" prefWidth="200.0" text="Enseignant" />
+          <TableColumn fx:id="classeColumn" prefWidth="150.0" text="Classe" />
+          <TableColumn fx:id="pourcentageColumn" prefWidth="150.0" text="Réalisation (%)" />
+          <TableColumn fx:id="actionsColumn" prefWidth="150.0" text="Actions" />
+        </columns>
+      </TableView>
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>

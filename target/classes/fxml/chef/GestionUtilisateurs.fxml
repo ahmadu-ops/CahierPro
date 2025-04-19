@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
+
+<VBox spacing="20.0" styleClass="container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.chef.GestionUtilisateursController">
+   <children>
+      <HBox alignment="CENTER_LEFT" spacing="15.0">
+         <children>
+            <ComboBox fx:id="roleComboBox" prefHeight="40.0" prefWidth="250.0" promptText="Filtrer par rôle" />
+            <Button fx:id="ajouterUtilisateurButton" mnemonicParsing="false" onAction="#handleAjouterUtilisateur" prefHeight="40.0" styleClass="action-button" text="Nouvel Utilisateur">
+               <graphic>
+                  <SVGPath content="M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z" fill="WHITE" />
+               </graphic>
+            </Button>
+         </children>
+      </HBox>
+      <TableView fx:id="utilisateursTableView" prefHeight="500.0" VBox.vgrow="ALWAYS">
+        <columns>
+          <TableColumn fx:id="nomPrenomColumn" prefWidth="200.0" text="Nom et Prénom" />
+          <TableColumn fx:id="emailColumn" prefWidth="200.0" text="Email" />
+          <TableColumn fx:id="roleColumn" prefWidth="150.0" text="Rôle" />
+          <TableColumn fx:id="classeColumn" prefWidth="150.0" text="Classe" />
+          <TableColumn fx:id="actionsColumn" prefWidth="150.0" text="Actions" />
+        </columns>
+      </TableView>
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>
