@@ -4,7 +4,7 @@ import dao.ClasseDAO;
 import dao.CoursDAO;
 import dao.SeanceDAO;
 import dao.UtilisateurDAO;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -20,6 +20,7 @@ import models.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ public class SeancesValiderController implements Initializable {
     @FXML private TableColumn<Seance, String> dateColumn1;
     @FXML private TableColumn<Seance, String> coursColumn1;
     @FXML private TableColumn<Seance, String> enseignantColumn1;
-    @FXML private TableColumn<Seance, Number> dureeColumn1;
+    @FXML private TableColumn<Seance, String> dureeColumn1;  // Modifié pour utiliser String au lieu de Number
     @FXML private TableColumn<Seance, String> contenuColumn1;
     @FXML private TableColumn<Seance, Seance> actionsColumn1;
     
@@ -45,7 +46,7 @@ public class SeancesValiderController implements Initializable {
     @FXML private TableColumn<Seance, String> dateColumn2;
     @FXML private TableColumn<Seance, String> coursColumn2;
     @FXML private TableColumn<Seance, String> enseignantColumn2;
-    @FXML private TableColumn<Seance, Number> dureeColumn2;
+    @FXML private TableColumn<Seance, String> dureeColumn2;  // Modifié pour utiliser String au lieu de Number
     @FXML private TableColumn<Seance, String> contenuColumn2;
     @FXML private TableColumn<Seance, Seance> actionsColumn2;
     
@@ -84,8 +85,11 @@ public class SeancesValiderController implements Initializable {
             return new SimpleStringProperty("N/A");
         });
         
-        dureeColumn1.setCellValueFactory(data -> 
-            new SimpleIntegerProperty(data.getValue().getDuree()));
+        // Modifier l'affichage pour montrer la durée en heures
+        dureeColumn1.setCellValueFactory(data -> {
+            int heures = data.getValue().getDuree() / 60;  // Division entière pour avoir un nombre entier d'heures
+            return new SimpleStringProperty(heures + " h");
+        });
         
         contenuColumn1.setCellValueFactory(data -> {
             String contenu = data.getValue().getContenu();
@@ -144,8 +148,11 @@ public class SeancesValiderController implements Initializable {
             return new SimpleStringProperty("N/A");
         });
         
-        dureeColumn2.setCellValueFactory(data -> 
-            new SimpleIntegerProperty(data.getValue().getDuree()));
+        // Modifier l'affichage pour montrer la durée en heures
+        dureeColumn2.setCellValueFactory(data -> {
+            double heures = data.getValue().getDuree() / 60;  // Convertir minutes en heures
+            return new SimpleStringProperty(heures + " h");
+        });
         
         contenuColumn2.setCellValueFactory(data -> {
             String contenu = data.getValue().getContenu();

@@ -20,6 +20,7 @@ import models.Seance;
 import models.Utilisateur;
 
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
@@ -101,7 +102,9 @@ public class DetailSeanceController implements Initializable {
             
             // Afficher les détails de la séance
             dateLabel.setText(seance.getDateSeance().format(dateFormatter));
-            dureeLabel.setText(seance.getDuree() + " minutes");
+            // Convertir la durée de minutes en heures
+            int heures = seance.getDuree() / 60;  // Division entière
+            dureeLabel.setText(heures + " heures");
             statutLabel.setText(seance.isEstValidee() ? "Validée" : "En attente");
             contenuTextArea.setText(seance.getContenu());
             

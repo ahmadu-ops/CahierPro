@@ -66,6 +66,12 @@
                   <ComboBox fx:id="classeComboBox" prefHeight="40.0" prefWidth="400.0" promptText="Sélectionnez une classe" styleClass="form-control" />
                </children>
             </HBox>
+            <VBox fx:id="nouvelleClasseContainer" managed="false" spacing="10.0" styleClass="form-group" visible="false">
+               <children>
+                  <Label styleClass="form-label" text="Nouvelle classe (si applicable)" />
+                  <TextField fx:id="nouvelleClasseField" prefHeight="40.0" promptText="Entrez le nom de la nouvelle classe" styleClass="form-control" />
+               </children>
+            </VBox>
          </children>
          <padding>
             <Insets bottom="30.0" left="30.0" right="30.0" top="20.0" />

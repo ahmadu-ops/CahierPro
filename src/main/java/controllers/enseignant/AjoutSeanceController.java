@@ -22,19 +22,25 @@ public class AjoutSeanceController implements Initializable {
 
     @FXML private ComboBox<Cours> coursComboBox;
     @FXML private DatePicker dateSeancePicker;
-    @FXML private Spinner<Integer> dureeSpinner;
+    @FXML private Spinner<Integer> dureeSpinner; // Utiliser des entiers pour les heures
     @FXML private TextArea contenuTextArea;
     @FXML private Button saveButton;
     @FXML private Button cancelButton;
+    @FXML private Label dureeLabel; // Ajouter cette référence pour le label
     
     private Enseignant enseignant;
     private Cours coursPreselectionne;
     
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Configuration du spinner pour la durée (entre 30 et 240 minutes)
+        // Modifier le texte du label pour indiquer des heures
+        if (dureeLabel != null) {
+            dureeLabel.setText("Durée (en heures) *");
+        }
+        
+        // Configuration du spinner pour des heures entières (entre 1 et 8 heures)
         SpinnerValueFactory<Integer> valueFactory = 
-            new SpinnerValueFactory.IntegerSpinnerValueFactory(30, 240, 60, 15);
+            new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 8, 2);  // Min, Max, Initial
         dureeSpinner.setValueFactory(valueFactory);
         
         // Configuration du DatePicker pour ne pas permettre de dates dans le passé
@@ -109,13 +115,15 @@ public class AjoutSeanceController implements Initializable {
         }
         
         try {
-            // Création de la séance
+            // Conversion de la durée en minutes (car le modèle stocke en minutes)
+            int dureeMinutes = dureeSpinner.getValue() * 60;
+            
             Seance nouvelleSeance = new Seance(
                 0, // L'ID sera généré par la base de données
                 coursComboBox.getValue().getId(),
                 contenuTextArea.getText().trim(),
                 dateSeancePicker.getValue(),
-                dureeSpinner.getValue(),
+                dureeMinutes,
                 false // Par défaut, une nouvelle séance n'est pas validée
             );
             

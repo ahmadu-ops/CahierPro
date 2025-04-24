@@ -31,6 +31,7 @@ public class EnseignantDashboardController implements Initializable {
     @FXML private Label coursCountLabel;
     @FXML private Label seancesCountLabel;
     @FXML private Label validatedSeancesLabel;
+    @FXML private Label savedSeancesLabel;
     @FXML private BorderPane contentArea;
     @FXML private StackPane dashboardView;
     
@@ -66,7 +67,7 @@ public class EnseignantDashboardController implements Initializable {
             List<Cours> cours = CoursDAO.findByEnseignant(utilisateur.getId());
             coursCountLabel.setText(String.valueOf(cours.size()));
             
-            // Nombre total de séances
+            // Nombre total de séances et séances validées
             int totalSeances = 0;
             int validatedSeances = 0;
             
@@ -80,8 +81,14 @@ public class EnseignantDashboardController implements Initializable {
                     .count();
             }
             
+            // Mettre à jour le nombre de séances total
             seancesCountLabel.setText(String.valueOf(totalSeances));
+            
+            // Afficher le nombre de séances validées en gras
             validatedSeancesLabel.setText(String.valueOf(validatedSeances));
+            
+            // Afficher "sur X séances" en dessous
+            savedSeancesLabel.setText("sur " + totalSeances + " séances");
             
         } catch (Exception e) {
             System.err.println("Erreur lors du chargement des données du dashboard: " + e.getMessage());

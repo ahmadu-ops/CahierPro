@@ -4,7 +4,6 @@ import dao.ClasseDAO;
 import dao.FichePedagogiqueDAO;
 import dao.SeanceDAO;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -37,7 +36,7 @@ public class SeancesCoursController implements Initializable {
     @FXML private Button ajouterSeanceButton;
     @FXML private TableView<Seance> seancesTableView;
     @FXML private TableColumn<Seance, String> dateColumn;
-    @FXML private TableColumn<Seance, Number> dureeColumn;
+    @FXML private TableColumn<Seance, String> dureeColumn;  // Modifié pour utiliser String au lieu de Number
     @FXML private TableColumn<Seance, String> contenuColumn;
     @FXML private TableColumn<Seance, Boolean> statutColumn;
     @FXML private Button closeButton;
@@ -53,8 +52,11 @@ public class SeancesCoursController implements Initializable {
         dateColumn.setCellValueFactory(data -> 
             new SimpleStringProperty(data.getValue().getDateSeance().format(dateFormatter)));
         
-        dureeColumn.setCellValueFactory(data -> 
-            new SimpleIntegerProperty(data.getValue().getDuree()));
+        // Modifier l'affichage pour montrer la durée en heures
+        dureeColumn.setCellValueFactory(data -> {
+            int heures = data.getValue().getDuree() / 60;  // Division entière pour avoir un nombre entier d'heures
+            return new SimpleStringProperty(heures + " h");
+        });
         
         contenuColumn.setCellValueFactory(data -> 
             new SimpleStringProperty(data.getValue().getContenu()));

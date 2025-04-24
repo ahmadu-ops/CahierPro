@@ -19,7 +19,6 @@ import models.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -64,6 +63,7 @@ public class GestionUtilisateursController implements Initializable {
             return new SimpleStringProperty(roleAffiche);
         });
         
+        // Colonne classe visible uniquement pour les responsables
         classeColumn.setCellValueFactory(data -> {
             if (data.getValue() instanceof Responsable) {
                 Responsable resp = (Responsable) data.getValue();
@@ -73,39 +73,8 @@ public class GestionUtilisateursController implements Initializable {
             return new SimpleStringProperty("-");
         });
         
-        // Configurer la colonne d'actions
-        actionsColumn.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue()));
-        actionsColumn.setCellFactory(param -> new TableCell<Utilisateur, Utilisateur>() {
-            private final Button editButton = new Button("Modifier");
-            private final Button deleteButton = new Button("Supprimer");
-            
-            @Override
-            protected void updateItem(Utilisateur utilisateur, boolean empty) {
-                super.updateItem(utilisateur, empty);
-                
-                if (utilisateur == null) {
-                    setGraphic(null);
-                    return;
-                }
-                
-                // Empêcher la modification/suppression du chef de département connecté
-                boolean isCurrentChef = utilisateur.getRole().equals("chef_departement");
-                
-                // Configurer les boutons
-                editButton.getStyleClass().add("button-secondary");
-                editButton.setOnAction(event -> modifierUtilisateur(utilisateur));
-                editButton.setDisable(isCurrentChef);
-                
-                deleteButton.getStyleClass().add("button-danger");
-                deleteButton.setOnAction(event -> supprimerUtilisateur(utilisateur));
-                deleteButton.setDisable(isCurrentChef);
-                
-                // Créer un conteneur horizontal pour les boutons
-                HBox hbox = new HBox(5);
-                hbox.getChildren().addAll(editButton, deleteButton);
-                setGraphic(hbox);
-            }
-        });
+        // Désactiver temporairement la colonne d'actions
+        actionsColumn.setVisible(false);
         
         // Configurer le combobox de filtre
         roleComboBox.setItems(FXCollections.observableArrayList(
@@ -121,10 +90,13 @@ public class GestionUtilisateursController implements Initializable {
             (observable, oldValue, newValue) -> {
                 if (newValue != null) {
                     filtrerUtilisateurs(newValue);
+                    
+                    // Afficher/masquer la colonne classe selon le filtre
+                    classeColumn.setVisible("Responsables de classe".equals(newValue) || "Tous les utilisateurs".equals(newValue));
                 }
             });
         
-        // Charger tous les utilisateurs au démarrage
+        // Charger tous les utilisateurs au démarrage (sauf les chefs de département)
         loadAllUtilisateurs();
     }
     
@@ -134,7 +106,11 @@ public class GestionUtilisateursController implements Initializable {
     
     private void loadAllUtilisateurs() {
         try {
-            List<Utilisateur> utilisateurs = UtilisateurDAO.findAll();
+            // Récupérer tous les utilisateurs sauf les chefs de département
+            List<Utilisateur> utilisateurs = UtilisateurDAO.findAll().stream()
+                .filter(u -> !"chef_departement".equals(u.getRole()))
+                .collect(Collectors.toList());
+            
             utilisateursTableView.setItems(FXCollections.observableArrayList(utilisateurs));
         } catch (Exception e) {
             System.err.println("Erreur lors du chargement des utilisateurs: " + e.getMessage());
@@ -154,7 +130,10 @@ public class GestionUtilisateursController implements Initializable {
                     utilisateurs = UtilisateurDAO.findByRole("responsable_classe");
                     break;
                 default:
-                    utilisateurs = UtilisateurDAO.findAll();
+                    // Pour "Tous les utilisateurs", exclure les chefs de département
+                    utilisateurs = UtilisateurDAO.findAll().stream()
+                        .filter(u -> !"chef_departement".equals(u.getRole()))
+                        .collect(Collectors.toList());
                     break;
             }
             
@@ -192,53 +171,6 @@ public class GestionUtilisateursController implements Initializable {
         } catch (IOException e) {
             System.err.println("Erreur lors du chargement de la vue Ajout Utilisateur: " + e.getMessage());
             e.printStackTrace();
-        }
-    }
-    
-    private void modifierUtilisateur(Utilisateur utilisateur) {
-        // Cette fonctionnalité pourrait être implémentée plus tard
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information");
-        alert.setHeaderText(null);
-        alert.setContentText("La modification d'utilisateur n'est pas encore implémentée.");
-        alert.showAndWait();
-    }
-    
-    private void supprimerUtilisateur(Utilisateur utilisateur) {
-        // Demander confirmation
-        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmation.setTitle("Confirmation");
-        confirmation.setHeaderText("Supprimer l'utilisateur");
-        confirmation.setContentText("Êtes-vous sûr de vouloir supprimer l'utilisateur " + 
-                                   utilisateur.getPrenom() + " " + utilisateur.getNom() + " ?");
-        
-        Optional<ButtonType> result = confirmation.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            boolean success = UtilisateurDAO.delete(utilisateur.getId());
-            
-            if (success) {
-                // Recharger la liste des utilisateurs
-                String filtre = roleComboBox.getValue();
-                if (filtre != null) {
-                    filtrerUtilisateurs(filtre);
-                } else {
-                    loadAllUtilisateurs();
-                }
-                
-                // Afficher un message de succès
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Succès");
-                alert.setHeaderText(null);
-                alert.setContentText("L'utilisateur a été supprimé avec succès.");
-                alert.showAndWait();
-            } else {
-                // Afficher un message d'erreur
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Erreur");
-                alert.setHeaderText(null);
-                alert.setContentText("Impossible de supprimer l'utilisateur.");
-                alert.showAndWait();
-            }
         }
     }
 }

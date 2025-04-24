@@ -154,7 +154,7 @@
                                           </StackPane>
                                           <Label styleClass="card-title" text="Séances validées" />
                                           <Label fx:id="validatedSeancesLabel" styleClass="card-value" text="8" />
-                                          <Label styleClass="card-description" text="Sur 12 séances" />
+                                          <Label fx:id="savedSeancesLabel" styleClass="card-description" text="sur 12 séances" />
                                        </children>
                                        <padding>
                                           <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />

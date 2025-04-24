@@ -5,7 +5,6 @@ import dao.CoursDAO;
 import dao.SeanceDAO;
 import dao.UtilisateurDAO;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -21,6 +20,7 @@ import models.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ public class CahierTexteController implements Initializable {
     @FXML private TableColumn<Seance, String> dateColumn;
     @FXML private TableColumn<Seance, String> coursColumn;
     @FXML private TableColumn<Seance, String> enseignantColumn;
-    @FXML private TableColumn<Seance, Number> dureeColumn;
+    @FXML private TableColumn<Seance, String> dureeColumn;  // Modifié pour utiliser String au lieu de Number
     @FXML private TableColumn<Seance, String> contenuColumn;
     @FXML private TableColumn<Seance, Boolean> statutColumn;
     @FXML private TableColumn<Seance, Seance> actionsColumn;
@@ -64,8 +64,11 @@ public class CahierTexteController implements Initializable {
             return new SimpleStringProperty("N/A");
         });
         
-        dureeColumn.setCellValueFactory(data -> 
-            new SimpleIntegerProperty(data.getValue().getDuree()));
+        // Modifier l'affichage pour montrer la durée en heures
+        dureeColumn.setCellValueFactory(data -> {
+            int heures = data.getValue().getDuree() / 60;  // Division entière pour avoir un nombre entier d'heures
+            return new SimpleStringProperty(heures + " h");
+        });
         
         contenuColumn.setCellValueFactory(data -> {
             String contenu = data.getValue().getContenu();

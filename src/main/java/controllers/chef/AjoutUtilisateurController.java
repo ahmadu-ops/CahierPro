@@ -12,6 +12,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.*;
 
@@ -30,6 +31,8 @@ public class AjoutUtilisateurController implements Initializable {
     @FXML private ComboBox<String> roleComboBox;
     @FXML private HBox classeContainer;
     @FXML private ComboBox<Classe> classeComboBox;
+    @FXML private TextField nouvelleClasseField;
+    @FXML private VBox nouvelleClasseContainer;
     @FXML private Button saveButton;
     @FXML private Button cancelButton;
 
@@ -37,9 +40,9 @@ public class AjoutUtilisateurController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Configurer les options du rôle
+        // Configurer les options du rôle - ENLEVER chef_departement des options
         roleComboBox.setItems(FXCollections.observableArrayList(
-                "chef_departement", "enseignant", "responsable_classe"));
+                "enseignant", "responsable_classe"));
         
         // Par défaut, sélectionner "enseignant"
         roleComboBox.setValue("enseignant");
@@ -49,11 +52,21 @@ public class AjoutUtilisateurController implements Initializable {
             if ("responsable_classe".equals(newVal)) {
                 classeContainer.setVisible(true);
                 classeContainer.setManaged(true);
+                nouvelleClasseContainer.setVisible(true);
+                nouvelleClasseContainer.setManaged(true);
             } else {
                 classeContainer.setVisible(false);
                 classeContainer.setManaged(false);
+                nouvelleClasseContainer.setVisible(false);
+                nouvelleClasseContainer.setManaged(false);
             }
         });
+        
+        // Initialiser la visibilité des containers
+        classeContainer.setVisible(false);
+        classeContainer.setManaged(false);
+        nouvelleClasseContainer.setVisible(false);
+        nouvelleClasseContainer.setManaged(false);
         
         // Charger les classes disponibles
         loadClasses();
@@ -106,11 +119,13 @@ public class AjoutUtilisateurController implements Initializable {
             return;
         }
         
-        // Vérifier la sélection de classe pour les responsables
-        if ("responsable_classe".equals(roleComboBox.getValue()) && classeComboBox.getValue() == null) {
-            showAlert(Alert.AlertType.WARNING, "Classe requise", "Veuillez sélectionner une classe",
-                    "Une classe est requise pour un responsable de classe.");
-            return;
+        // Si c'est un responsable, vérifier qu'une classe est sélectionnée ou qu'une nouvelle est fournie
+        if ("responsable_classe".equals(roleComboBox.getValue())) {
+            if (classeComboBox.getValue() == null && (nouvelleClasseField.getText() == null || nouvelleClasseField.getText().trim().isEmpty())) {
+                showAlert(Alert.AlertType.WARNING, "Classe requise", "Information de classe manquante",
+                        "Veuillez soit sélectionner une classe existante, soit fournir un nom pour une nouvelle classe.");
+                return;
+            }
         }
         
         try {
@@ -124,29 +139,36 @@ public class AjoutUtilisateurController implements Initializable {
             boolean success = false;
             
             switch (role) {
-                case "chef_departement":
-                    ChefDepartement chef = new ChefDepartement(0, nom, prenom, email, motDePasse);
-                    success = UtilisateurDAO.save(chef);
-                    break;
-                    
                 case "enseignant":
                     Enseignant enseignant = new Enseignant(0, nom, prenom, email, motDePasse);
                     success = UtilisateurDAO.save(enseignant);
                     break;
                     
                 case "responsable_classe":
-                    Classe classe = classeComboBox.getValue();
                     Responsable responsable = new Responsable(0, nom, prenom, email, motDePasse, 0);
                     success = UtilisateurDAO.save(responsable);
                     
                     if (success) {
-                        // Mettre à jour la classe avec le nouvel ID de responsable
-                        // Note: Ceci ne fonctionnera que si getGeneratedKeys() est correctement implémenté dans UtilisateurDAO
+                        // Récupérer l'ID du responsable créé
                         List<Responsable> responsables = getResponsableByEmail(email);
                         if (!responsables.isEmpty()) {
                             Responsable savedResp = responsables.get(0);
-                            classe.setResponsableId(savedResp.getId());
-                            ClasseDAO.update(classe);
+                            Classe classe;
+                            
+                            // Soit utiliser une classe existante soit en créer une nouvelle
+                            if (classeComboBox.getValue() != null) {
+                                classe = classeComboBox.getValue();
+                                classe.setResponsableId(savedResp.getId());
+                                ClasseDAO.update(classe);
+                            } else if (nouvelleClasseField.getText() != null && !nouvelleClasseField.getText().trim().isEmpty()) {
+                                // Créer une nouvelle classe
+                                classe = new Classe(0, nouvelleClasseField.getText().trim(), savedResp.getId());
+                                if (ClasseDAO.save(classe)) {
+                                    // Mettre à jour le responsable avec l'ID de la nouvelle classe
+                                    savedResp.setClasseId(classe.getId());
+                                    UtilisateurDAO.update(savedResp);
+                                }
+                            }
                         }
                     }
                     break;
@@ -167,7 +189,6 @@ public class AjoutUtilisateurController implements Initializable {
     
     private List<Responsable> getResponsableByEmail(String email) {
         try {
-            // Cette méthode simplifiée suppose que vous avez une méthode findByEmail dans votre UtilisateurDAO
             List<Utilisateur> utilisateurs = UtilisateurDAO.findAll();
             return utilisateurs.stream()
                     .filter(u -> u instanceof Responsable && u.getEmail().equals(email))
