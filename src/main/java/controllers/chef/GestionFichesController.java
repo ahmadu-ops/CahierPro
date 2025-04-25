@@ -16,6 +16,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import models.*;
 import views.utils.PDFGenerator;
@@ -148,20 +149,39 @@ public class GestionFichesController implements Initializable {
     
     private void exportFiche(FichePedagogique fiche) {
         try {
-            String fileName = "fiche_" + fiche.getId() + "_" + 
+            // Créer un FileChooser pour permettre à l'utilisateur de choisir où sauvegarder le PDF
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Enregistrer la fiche pédagogique");
+            
+            // Proposer un nom de fichier par défaut
+            String defaultFileName = "fiche_" + fiche.getId() + "_" + 
                 LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + ".pdf";
+            fileChooser.setInitialFileName(defaultFileName);
             
-            boolean success = PDFGenerator.genererPDF(fiche.getId(), fileName);
+            // Définir les filtres pour n'afficher que les fichiers PDF
+            FileChooser.ExtensionFilter extFilter = 
+                new FileChooser.ExtensionFilter("Documents PDF (*.pdf)", "*.pdf");
+            fileChooser.getExtensionFilters().add(extFilter);
             
-            if (success) {
-                File file = new File(fileName);
-                String absolutePath = file.getAbsolutePath();
+            // Afficher la fenêtre de dialogue pour choisir l'emplacement et le nom du fichier
+            File file = fileChooser.showSaveDialog(fichesTableView.getScene().getWindow());
+            
+            if (file != null) {
+                String filePath = file.getAbsolutePath();
                 
-                showAlert(Alert.AlertType.INFORMATION, "Succès", 
-                    "La fiche a été exportée avec succès dans:\n" + absolutePath);
-            } else {
-                showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'exporter la fiche en PDF.");
+                // Générer le PDF à l'emplacement choisi
+                boolean success = PDFGenerator.genererPDF(fiche.getId(), filePath);
+                
+                if (success) {
+                    // Le PDF est déjà ouvert automatiquement par la méthode genererPDF
+                    showAlert(Alert.AlertType.INFORMATION, "Succès", 
+                        "La fiche a été exportée avec succès et ouverte dans votre lecteur PDF.");
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'exporter la fiche en PDF.");
+                }
             }
+            // Si l'utilisateur annule, ne rien faire
+            
         } catch (Exception e) {
             System.err.println("Erreur lors de l'export de la fiche: " + e.getMessage());
             e.printStackTrace();

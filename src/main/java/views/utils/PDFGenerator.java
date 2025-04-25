@@ -2,10 +2,13 @@ package views.utils;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
+import com.itextpdf.text.Image;
 import dao.ClasseDAO;
 import dao.FichePedagogiqueDAO;
 import models.*;
 
+import java.awt.Desktop;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -30,7 +33,7 @@ public class PDFGenerator {
         Cours cours = infos.getCours();
         Enseignant enseignant = infos.getEnseignant();
         
-        // Récupérer la classe associée au cours (nécessite d'implémenter une méthode dans ClasseDAO)
+        // Récupérer la classe associée au cours
         Classe classe = ClasseDAO.findByCoursId(cours.getId());
         if (classe == null) {
             return false;
@@ -38,50 +41,79 @@ public class PDFGenerator {
 
         try {
             // Créer le document PDF
-            Document document = new Document(PageSize.A4);
+            Document document = new Document(PageSize.A4, 50, 50, 50, 50); // Marges de 50pt
             PdfWriter.getInstance(document, new FileOutputStream(outputPath));
             document.open();
 
+            // Ajouter l'en-tête institutionnel
+            ajouterEntete(document);
+            document.add(Chunk.NEWLINE);
+
             // Ajouter le titre
-            Font titleFont = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
+            Font titleFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
             Paragraph title = new Paragraph("FICHE DE SUIVI PÉDAGOGIQUE", titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
             document.add(Chunk.NEWLINE);
 
-            // Informations générales
+            // Informations générales avec espacements réduits
             ajouterInfosGenerales(document, cours, enseignant, classe);
             document.add(Chunk.NEWLINE);
 
             // Pourcentage de réalisation
-            Font sectionFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
+            Font normalFont = new Font(Font.FontFamily.TIMES_ROMAN, 12);
+            Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
             DecimalFormat df = new DecimalFormat("#.##");
-            Paragraph pourcentage = new Paragraph("Pourcentage de réalisation : " + 
-                                                 df.format(fiche.getPourcentageRealisation()) + " %", sectionFont);
+            Paragraph pourcentage = new Paragraph();
+            pourcentage.add(new Chunk("Pourcentage de réalisation : ", boldFont));
+            pourcentage.add(new Chunk(df.format(fiche.getPourcentageRealisation()) + " %", normalFont));
             document.add(pourcentage);
             document.add(Chunk.NEWLINE);
 
             // Tableau des séances
+            Font sectionFont = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD);
             document.add(new Paragraph("SÉANCES", sectionFont));
             ajouterTableauSeances(document, infos.getSeances());
             document.add(Chunk.NEWLINE);
 
             // Commentaires
+            document.add(new Paragraph("COMMENTAIRES", sectionFont));
             if (fiche.getCommentaire() != null && !fiche.getCommentaire().isEmpty()) {
-                document.add(new Paragraph("COMMENTAIRES", sectionFont));
-                document.add(new Paragraph(fiche.getCommentaire()));
-                document.add(Chunk.NEWLINE);
+                document.add(new Paragraph(fiche.getCommentaire(), normalFont));
+            } else {
+                document.add(new Paragraph("Aucun commentaire", normalFont));
             }
+            document.add(Chunk.NEWLINE);
 
-            // Date de génération
+            // Signature et date sur la même ligne
+            PdfPTable footerTable = new PdfPTable(2);
+            footerTable.setWidthPercentage(100);
+            
+            // Signature du Chef de Département (à gauche)
+            PdfPCell signatureCell = new PdfPCell();
+            signatureCell.setBorder(Rectangle.NO_BORDER);
+            Paragraph signature = new Paragraph("Signature du Chef de Département:", boldFont);
+            signatureCell.addElement(signature);
+            footerTable.addCell(signatureCell);
+            
+            // Date de génération (à droite)
+            PdfPCell dateCell = new PdfPCell();
+            dateCell.setBorder(Rectangle.NO_BORDER);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             Paragraph dateGen = new Paragraph("Document généré le " + 
                                              fiche.getDateGeneration().format(formatter), 
-                                             new Font(Font.FontFamily.HELVETICA, 10, Font.ITALIC));
+                                             new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.ITALIC));
             dateGen.setAlignment(Element.ALIGN_RIGHT);
-            document.add(dateGen);
+            dateCell.addElement(dateGen);
+            footerTable.addCell(dateCell);
+            
+            document.add(footerTable);
 
             document.close();
+            
+            // Ouvrir le PDF avec le lecteur par défaut
+            ouvrirPDF(outputPath);
+            
             return true;
         } catch (DocumentException | IOException e) {
             e.printStackTrace();
@@ -90,29 +122,98 @@ public class PDFGenerator {
     }
 
     /**
+     * Ajoute l'en-tête institutionnel au document
+     */
+    private static void ajouterEntete(Document document) throws DocumentException, IOException {
+        // Création d'un tableau pour l'en-tête
+        PdfPTable headerTable = new PdfPTable(3);
+        headerTable.setWidthPercentage(100);
+        try {
+            headerTable.setWidths(new float[] {1, 3, 1});
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        }
+        
+        // Logo de l'université (à gauche)
+        PdfPCell logoCell = new PdfPCell();
+        logoCell.setBorder(Rectangle.NO_BORDER);
+        
+        // Charger l'image du logo
+        String logoPath = "src\\main\\resources\\images\\logo-universite.png";
+        Image logo = Image.getInstance(logoPath);
+        // Redimensionner l'image si nécessaire
+        logo.scaleToFit(80, 80);
+        logo.setAlignment(Element.ALIGN_CENTER);
+        
+        logoCell.addElement(logo);
+        headerTable.addCell(logoCell);
+        
+        // Informations centrales
+        PdfPCell infoCell = new PdfPCell();
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        Font headerFont = new Font(Font.FontFamily.TIMES_ROMAN, 10);
+        Font deviseFont = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
+        
+        Paragraph devise = new Paragraph("RÉPUBLIQUE DÉMOCRATIQUE - UNITÉ, TRAVAIL, PROGRÈS", deviseFont);
+        devise.setAlignment(Element.ALIGN_CENTER);
+        infoCell.addElement(devise);
+        
+        Paragraph ministere = new Paragraph("MINISTÈRE DE L'ENSEIGNEMENT SUPÉRIEUR ET DE LA RECHERCHE", headerFont);
+        ministere.setAlignment(Element.ALIGN_CENTER);
+        infoCell.addElement(ministere);
+        
+        Paragraph universite = new Paragraph("UNIVERSITÉ NATIONALE DES SCIENCES ET TECHNOLOGIES", headerFont);
+        universite.setAlignment(Element.ALIGN_CENTER);
+        infoCell.addElement(universite);
+        
+        Paragraph departement = new Paragraph("DÉPARTEMENT D'INFORMATIQUE ET SCIENCES NUMÉRIQUES", headerFont);
+        departement.setAlignment(Element.ALIGN_CENTER);
+        infoCell.addElement(departement);
+        
+        headerTable.addCell(infoCell);
+        
+        // Drapeau (à droite)
+        PdfPCell flagCell = new PdfPCell();
+        flagCell.setBorder(Rectangle.NO_BORDER);
+        
+        // Charger l'image du drapeau
+        String drapeauPath = "src\\main\\resources\\images\\drapeau-pays.jpg";
+        Image drapeau = Image.getInstance(drapeauPath);
+        // Redimensionner l'image si nécessaire
+        drapeau.scaleToFit(80, 60);
+        drapeau.setAlignment(Element.ALIGN_CENTER);
+        
+        flagCell.addElement(drapeau);
+        headerTable.addCell(flagCell);
+        
+        document.add(headerTable);
+    }
+
+    /**
      * Ajoute les informations générales au document
      */
     private static void ajouterInfosGenerales(Document document, Cours cours, Enseignant enseignant, Classe classe) 
             throws DocumentException {
-        Font normalFont = new Font(Font.FontFamily.HELVETICA, 12);
-        Font boldFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
+        Font normalFont = new Font(Font.FontFamily.TIMES_ROMAN, 12);
+        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
 
-        PdfPTable table = new PdfPTable(2);
-        table.setWidthPercentage(100);
-        
         // Cours
-        table.addCell(createCell("Cours :", boldFont));
-        table.addCell(createCell(cours.getIntitule(), normalFont));
+        Paragraph coursInfo = new Paragraph();
+        coursInfo.add(new Chunk("Cours : ", boldFont));
+        coursInfo.add(new Chunk(cours.getIntitule(), normalFont));
+        document.add(coursInfo);
         
-        // Enseignant
-        table.addCell(createCell("Enseignant :", boldFont));
-        table.addCell(createCell(enseignant.getPrenom() + " " + enseignant.getNom(), normalFont));
+        // Enseignant (sans espacement supplémentaire)
+        Paragraph enseignantInfo = new Paragraph();
+        enseignantInfo.add(new Chunk("Enseignant : ", boldFont));
+        enseignantInfo.add(new Chunk(enseignant.getPrenom() + " " + enseignant.getNom(), normalFont));
+        document.add(enseignantInfo);
         
-        // Classe
-        table.addCell(createCell("Classe :", boldFont));
-        table.addCell(createCell(classe.getNom(), normalFont));
-        
-        document.add(table);
+        // Classe (sans espacement supplémentaire)
+        Paragraph classeInfo = new Paragraph();
+        classeInfo.add(new Chunk("Classe : ", boldFont));
+        classeInfo.add(new Chunk(classe.getNom(), normalFont));
+        document.add(classeInfo);
     }
 
     /**
@@ -124,19 +225,32 @@ public class PDFGenerator {
         table.setWidthPercentage(100);
         
         // En-têtes du tableau
-        Font headerFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
+        Font headerFont = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
         table.addCell(createHeaderCell("Date", headerFont));
         table.addCell(createHeaderCell("Contenu", headerFont));
         table.addCell(createHeaderCell("Validé", headerFont));
         
         // Données du tableau
-        Font normalFont = new Font(Font.FontFamily.HELVETICA, 11);
+        Font normalFont = new Font(Font.FontFamily.TIMES_ROMAN, 12);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         
         for (Seance seance : seances) {
             table.addCell(createCell(seance.getDateSeance().format(formatter), normalFont));
             table.addCell(createCell(seance.getContenu(), normalFont));
-            table.addCell(createCell(seance.isEstValidee() ? "✓" : "□", normalFont));
+            
+            // Utiliser "OUI" ou "NON" pour la validation
+            PdfPCell validatedCell = new PdfPCell();
+            validatedCell.setPadding(8);
+            validatedCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            validatedCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            
+            if (seance.isEstValidee()) {
+                validatedCell.setPhrase(new Phrase("OUI", normalFont));
+            } else {
+                validatedCell.setPhrase(new Phrase("NON", normalFont));
+            }
+            
+            table.addCell(validatedCell);
         }
         
         document.add(table);
@@ -147,7 +261,7 @@ public class PDFGenerator {
      */
     private static PdfPCell createCell(String text, Font font) {
         PdfPCell cell = new PdfPCell(new Phrase(text, font));
-        cell.setPadding(5);
+        cell.setPadding(8);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         return cell;
@@ -160,5 +274,25 @@ public class PDFGenerator {
         PdfPCell cell = createCell(text, font);
         cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
         return cell;
+    }
+    
+    /**
+     * Ouvre le PDF avec le lecteur PDF par défaut du système
+     */
+    private static void ouvrirPDF(String filePath) {
+        try {
+            File file = new File(filePath);
+            if (file.exists()) {
+                if (Desktop.isDesktopSupported()) {
+                    Desktop.getDesktop().open(file);
+                } else {
+                    System.out.println("Le bureau n'est pas supporté sur ce système.");
+                }
+            } else {
+                System.out.println("Le fichier spécifié n'existe pas.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
