@@ -26,7 +26,7 @@
           <TableColumn fx:id="dateColumn" prefWidth="120.0" text="Date" />
           <TableColumn fx:id="coursColumn" prefWidth="200.0" text="Cours" />
           <TableColumn fx:id="classeColumn" prefWidth="150.0" text="Classe" />
-          <TableColumn fx:id="dureeColumn" prefWidth="80.0" text="Durée (min)" />
+          <TableColumn fx:id="dureeColumn" prefWidth="80.0" text="Durée" />
           <TableColumn fx:id="contenuColumn" prefWidth="250.0" text="Contenu" />
           <TableColumn fx:id="statutColumn" prefWidth="100.0" text="Statut" />
         </columns>

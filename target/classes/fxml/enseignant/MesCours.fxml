@@ -11,11 +11,11 @@
       <Label styleClass="section-title" text="Liste de mes cours" />
       <TableView fx:id="coursTableView" prefHeight="500.0" VBox.vgrow="ALWAYS">
         <columns>
-          <TableColumn fx:id="nomCoursColumn" prefWidth="200.0" text="Nom du cours" />
-          <TableColumn fx:id="classeColumn" prefWidth="150.0" text="Classe" />
-          <TableColumn fx:id="volumeHoraireColumn" prefWidth="150.0" text="Volume horaire" />
-          <TableColumn fx:id="realisationColumn" prefWidth="150.0" text="Réalisation (%)" />
-          <TableColumn fx:id="actionsColumn" prefWidth="150.0" text="Actions" />
+          <TableColumn fx:id="nomCoursColumn" prefWidth="250.0" text="Nom du cours" />
+          <TableColumn fx:id="classeColumn" prefWidth="200.0" text="Classe" />
+          <TableColumn fx:id="volumeHoraireColumn" prefWidth="200.0" text="Volume horaire" />
+          <TableColumn fx:id="realisationColumn" prefWidth="200.0" text="Réalisation (%)" />
+          <TableColumn fx:id="actionsColumn" prefWidth="250.0" text="Actions" />
         </columns>
       </TableView>
    </children>

@@ -69,7 +69,7 @@
             <TableView fx:id="seancesTableView" prefHeight="350.0">
               <columns>
                 <TableColumn fx:id="dateColumn" prefWidth="120.0" text="Date" />
-                <TableColumn fx:id="dureeColumn" prefWidth="100.0" text="Durée (min)" />
+                <TableColumn fx:id="dureeColumn" prefWidth="100.0" text="Durée" />
                 <TableColumn fx:id="contenuColumn" prefWidth="400.0" text="Contenu" />
                 <TableColumn fx:id="statutColumn" prefWidth="100.0" text="Statut" />
               </columns>

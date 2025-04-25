@@ -39,7 +39,7 @@
             </VBox>
             <VBox spacing="10.0" styleClass="form-group">
                <children>
-                  <Label styleClass="form-label" text="Durée (en minutes) *" />
+                  <Label styleClass="form-label" text="Durée (en heures) *" />
                   <Spinner fx:id="dureeSpinner" prefHeight="40.0" prefWidth="400.0" styleClass="form-control" />
                </children>
             </VBox>
