@@ -2,7 +2,7 @@ package views.utils;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
-import com.itextpdf.text.Image;
+
 import dao.ClasseDAO;
 import dao.FichePedagogiqueDAO;
 import models.*;
@@ -58,7 +58,7 @@ public class PDFGenerator {
 
             // Informations générales avec espacements réduits
             ajouterInfosGenerales(document, cours, enseignant, classe);
-            document.add(Chunk.NEWLINE);
+            // document.add(Chunk.NEWLINE);
 
             // Pourcentage de réalisation
             Font normalFont = new Font(Font.FontFamily.TIMES_ROMAN, 12);
@@ -72,7 +72,9 @@ public class PDFGenerator {
 
             // Tableau des séances
             Font sectionFont = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD);
-            document.add(new Paragraph("SÉANCES", sectionFont));
+            Paragraph titreSceance = new Paragraph("SÉANCES", sectionFont);
+            titreSceance.setSpacingAfter(8f); // ajuste la valeur selon ton besoin (en points)
+            document.add(titreSceance);
             ajouterTableauSeances(document, infos.getSeances());
             document.add(Chunk.NEWLINE);
 
@@ -139,10 +141,10 @@ public class PDFGenerator {
         logoCell.setBorder(Rectangle.NO_BORDER);
         
         // Charger l'image du logo
-        String logoPath = "src\\main\\resources\\images\\logo-universite.png";
+        String logoPath = "src\\main\\resources\\images\\logo-universite.jpg";
         Image logo = Image.getInstance(logoPath);
         // Redimensionner l'image si nécessaire
-        logo.scaleToFit(80, 80);
+        logo.scaleToFit(70, 70);
         logo.setAlignment(Element.ALIGN_CENTER);
         
         logoCell.addElement(logo);
@@ -154,19 +156,19 @@ public class PDFGenerator {
         Font headerFont = new Font(Font.FontFamily.TIMES_ROMAN, 10);
         Font deviseFont = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
         
-        Paragraph devise = new Paragraph("RÉPUBLIQUE DÉMOCRATIQUE - UNITÉ, TRAVAIL, PROGRÈS", deviseFont);
+        Paragraph devise = new Paragraph("RÉPUBLIQUE DU SÉNÉGAL", deviseFont);
         devise.setAlignment(Element.ALIGN_CENTER);
         infoCell.addElement(devise);
         
-        Paragraph ministere = new Paragraph("MINISTÈRE DE L'ENSEIGNEMENT SUPÉRIEUR ET DE LA RECHERCHE", headerFont);
+        Paragraph ministere = new Paragraph("MINISTÈRE DE L'ENSEIGNEMENT SUPÉRIEUR", headerFont);
         ministere.setAlignment(Element.ALIGN_CENTER);
         infoCell.addElement(ministere);
         
-        Paragraph universite = new Paragraph("UNIVERSITÉ NATIONALE DES SCIENCES ET TECHNOLOGIES", headerFont);
+        Paragraph universite = new Paragraph("UNIVERSITÉ IBA DER THIAM", headerFont);
         universite.setAlignment(Element.ALIGN_CENTER);
         infoCell.addElement(universite);
         
-        Paragraph departement = new Paragraph("DÉPARTEMENT D'INFORMATIQUE ET SCIENCES NUMÉRIQUES", headerFont);
+        Paragraph departement = new Paragraph("DÉPARTEMENT INFORMATIQUE", headerFont);
         departement.setAlignment(Element.ALIGN_CENTER);
         infoCell.addElement(departement);
         
@@ -180,7 +182,7 @@ public class PDFGenerator {
         String drapeauPath = "src\\main\\resources\\images\\drapeau-pays.jpg";
         Image drapeau = Image.getInstance(drapeauPath);
         // Redimensionner l'image si nécessaire
-        drapeau.scaleToFit(80, 60);
+        drapeau.scaleToFit(70, 70);
         drapeau.setAlignment(Element.ALIGN_CENTER);
         
         flagCell.addElement(drapeau);
@@ -196,12 +198,6 @@ public class PDFGenerator {
             throws DocumentException {
         Font normalFont = new Font(Font.FontFamily.TIMES_ROMAN, 12);
         Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
-
-        // Cours
-        Paragraph coursInfo = new Paragraph();
-        coursInfo.add(new Chunk("Cours : ", boldFont));
-        coursInfo.add(new Chunk(cours.getIntitule(), normalFont));
-        document.add(coursInfo);
         
         // Enseignant (sans espacement supplémentaire)
         Paragraph enseignantInfo = new Paragraph();
@@ -214,6 +210,12 @@ public class PDFGenerator {
         classeInfo.add(new Chunk("Classe : ", boldFont));
         classeInfo.add(new Chunk(classe.getNom(), normalFont));
         document.add(classeInfo);
+
+        // Cours
+        Paragraph coursInfo = new Paragraph();
+        coursInfo.add(new Chunk("Cours : ", boldFont));
+        coursInfo.add(new Chunk(cours.getIntitule(), normalFont));
+        document.add(coursInfo);
     }
 
     /**

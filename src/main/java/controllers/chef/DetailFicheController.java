@@ -140,11 +140,7 @@ public class DetailFicheController implements Initializable {
                 // Générer le PDF à l'emplacement choisi
                 boolean success = PDFGenerator.genererPDF(ficheId, filePath);
                 
-                if (success) {
-                    // Le PDF est déjà ouvert automatiquement par la méthode genererPDF
-                    showAlert(Alert.AlertType.INFORMATION, "Succès", 
-                        "La fiche a été exportée avec succès et ouverte dans votre lecteur PDF.");
-                } else {
+                if (!success) {
                     showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'exporter la fiche en PDF.");
                 }
             }

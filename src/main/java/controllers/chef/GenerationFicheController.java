@@ -182,23 +182,24 @@ public class GenerationFicheController implements Initializable {
                 String filePath = file.getAbsolutePath();
                 
                 // Générer le PDF à l'emplacement choisi
-                boolean success = PDFGenerator.genererPDF(fiche.getId(), filePath);
+                PDFGenerator.genererPDF(fiche.getId(), filePath);
+                closeWindow();
                 
-                if (success) {
-                    // Le PDF est déjà ouvert automatiquement par la méthode genererPDF
+            //     if (success) {
+            //         // Le PDF est déjà ouvert automatiquement par la méthode genererPDF
                     
-                    // Afficher un message de confirmation
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Succès");
-                    alert.setHeaderText("La fiche a été exportée avec succès");
-                    alert.setContentText("Le document a été généré et ouvert dans votre lecteur PDF.");
-                    alert.showAndWait();
+            //         // Afficher un message de confirmation
+            //         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            //         alert.setTitle("Succès");
+            //         alert.setHeaderText("La fiche a été exportée avec succès");
+            //         alert.setContentText("Le document a été généré et ouvert dans votre lecteur PDF.");
+                    // alert.showAndWait();
                     
-                    // Fermer la fenêtre
-                    closeWindow();
-                } else {
-                    showAlert(Alert.AlertType.ERROR, "Erreur", null, "Impossible d'exporter la fiche en PDF.");
-                }
+            //         // Fermer la fenêtre
+                    
+            //     } else {
+            //         showAlert(Alert.AlertType.ERROR, "Erreur", null, "Impossible d'exporter la fiche en PDF.");
+            //     }
             }
             // Si l'utilisateur annule, ne rien faire
             
