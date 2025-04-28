@@ -1,3 +1,4 @@
+// src/main/java/controllers/chef/GestionCoursController.java
 package controllers.chef;
 
 import dao.ClasseDAO;
@@ -14,14 +15,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import models.Classe;
 import models.Cours;
-import models.Enseignant;
 import models.Utilisateur;
 
 import java.io.IOException;
@@ -47,29 +45,25 @@ public class GestionCoursController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Configurer les cellules de la table
-        nomCoursColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getIntitule()));
-        
+        nomCoursColumn.setCellValueFactory(data ->
+            new SimpleStringProperty(data.getValue().getIntitule()));
         enseignantColumn.setCellValueFactory(data -> {
-            Utilisateur enseignant = UtilisateurDAO.findById(data.getValue().getEnseignantId());
-            return new SimpleStringProperty(enseignant != null ? 
-                    enseignant.getPrenom() + " " + enseignant.getNom() : "N/A");
+            Utilisateur ens = UtilisateurDAO.findById(data.getValue().getEnseignantId());
+            return new SimpleStringProperty(ens != null
+                ? ens.getPrenom() + " " + ens.getNom()
+                : "N/A");
         });
-        
         classeColumn.setCellValueFactory(data -> {
-            Classe classe = ClasseDAO.findByCoursId(data.getValue().getId());
-            return new SimpleStringProperty(classe != null ? classe.getNom() : "N/A");
+            Classe cl = ClasseDAO.findByCoursId(data.getValue().getId());
+            return new SimpleStringProperty(cl != null ? cl.getNom() : "N/A");
         });
-        
-        volumeHoraireColumn.setCellValueFactory(data -> 
+        volumeHoraireColumn.setCellValueFactory(data ->
             new SimpleIntegerProperty(data.getValue().getVolumeHoraire()));
-        
         realisationColumn.setCellValueFactory(data -> {
-            double pourcentage = FichePedagogiqueDAO.calculerPourcentageRealisation(data.getValue().getId());
-            return new SimpleDoubleProperty(pourcentage);
+            double pct = FichePedagogiqueDAO.calculerPourcentageRealisation(data.getValue().getId());
+            return new SimpleDoubleProperty(pct);
         });
-        
-        // Formatter la colonne de pourcentage
-        realisationColumn.setCellFactory(column -> new javafx.scene.control.TableCell<Cours, Number>() {
+        realisationColumn.setCellFactory(column -> new TableCell<Cours, Number>() {
             @Override
             protected void updateItem(Number item, boolean empty) {
                 super.updateItem(item, empty);
@@ -80,11 +74,9 @@ public class GestionCoursController implements Initializable {
                 }
             }
         });
-        
+
         // Charger les classes
         loadClasses();
-        
-        // Ajouter un listener sur la combobox de classe
         classeComboBox.getSelectionModel().selectedItemProperty().addListener(
             (observable, oldValue, newValue) -> {
                 if (newValue != null) {
@@ -93,43 +85,44 @@ public class GestionCoursController implements Initializable {
                     loadAllCours();
                 }
             });
-        
+
         // Charger tous les cours au démarrage
         loadAllCours();
+
+        // NOUVEAU : binding largeur + resize policy
+        Region parent = (Region) coursTableView.getParent();
+        coursTableView.prefWidthProperty().bind(parent.widthProperty());
+        coursTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
-    
+
     public void setUtilisateur(Utilisateur utilisateur) {
         this.utilisateur = utilisateur;
     }
-    
+
     private void loadClasses() {
         try {
             List<Classe> classes = ClasseDAO.findAll();
             classeComboBox.setItems(FXCollections.observableArrayList(classes));
-            
-            // Configurer l'affichage des classes
+
             classeComboBox.setConverter(new javafx.util.StringConverter<Classe>() {
                 @Override
                 public String toString(Classe classe) {
                     return classe == null ? "Toutes les classes" : classe.getNom();
                 }
-                
                 @Override
                 public Classe fromString(String string) {
                     return null;
                 }
             });
-            
-            // Ajouter l'option "Toutes les classes"
+
             classeComboBox.getItems().add(0, null);
             classeComboBox.getSelectionModel().selectFirst();
-            
         } catch (Exception e) {
             System.err.println("Erreur lors du chargement des classes: " + e.getMessage());
             e.printStackTrace();
         }
     }
-    
+
     private void loadAllCours() {
         try {
             List<Cours> cours = CoursDAO.findAll();
@@ -139,7 +132,7 @@ public class GestionCoursController implements Initializable {
             e.printStackTrace();
         }
     }
-    
+
     private void loadCoursByClasse(int classeId) {
         try {
             List<Cours> cours = CoursDAO.findByClasse(classeId);
@@ -149,13 +142,13 @@ public class GestionCoursController implements Initializable {
             e.printStackTrace();
         }
     }
-    
+
     @FXML
     private void handleAjouterCours(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/chef/AjoutCours.fxml"));
             Parent root = loader.load();
-            
+
             Stage stage = new Stage();
             stage.setTitle("Ajouter un cours");
             Scene scene = new Scene(root);
@@ -163,8 +156,7 @@ public class GestionCoursController implements Initializable {
             scene.getStylesheets().add("/css/chef.css");
             stage.setScene(scene);
             stage.show();
-            
-            // Recharger les cours après la fermeture de la fenêtre
+
             stage.setOnHidden(e -> {
                 if (classeComboBox.getValue() == null) {
                     loadAllCours();
@@ -172,7 +164,7 @@ public class GestionCoursController implements Initializable {
                     loadCoursByClasse(classeComboBox.getValue().getId());
                 }
             });
-            
+
         } catch (IOException e) {
             System.err.println("Erreur lors du chargement de la vue Ajout Cours: " + e.getMessage());
             e.printStackTrace();

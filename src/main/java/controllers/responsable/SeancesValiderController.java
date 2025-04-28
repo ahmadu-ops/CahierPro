@@ -1,3 +1,4 @@
+// src/main/java/controllers/responsable/SeancesValiderController.java
 package controllers.responsable;
 
 import dao.ClasseDAO;
@@ -15,6 +16,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import models.*;
 
@@ -36,7 +38,7 @@ public class SeancesValiderController implements Initializable {
     @FXML private TableColumn<Seance, String> dateColumn1;
     @FXML private TableColumn<Seance, String> coursColumn1;
     @FXML private TableColumn<Seance, String> enseignantColumn1;
-    @FXML private TableColumn<Seance, String> dureeColumn1;  // Modifié pour utiliser String au lieu de Number
+    @FXML private TableColumn<Seance, String> dureeColumn1;
     @FXML private TableColumn<Seance, String> contenuColumn1;
     @FXML private TableColumn<Seance, Seance> actionsColumn1;
     
@@ -46,7 +48,7 @@ public class SeancesValiderController implements Initializable {
     @FXML private TableColumn<Seance, String> dateColumn2;
     @FXML private TableColumn<Seance, String> coursColumn2;
     @FXML private TableColumn<Seance, String> enseignantColumn2;
-    @FXML private TableColumn<Seance, String> dureeColumn2;  // Modifié pour utiliser String au lieu de Number
+    @FXML private TableColumn<Seance, String> dureeColumn2;
     @FXML private TableColumn<Seance, String> contenuColumn2;
     @FXML private TableColumn<Seance, Seance> actionsColumn2;
     
@@ -57,16 +59,6 @@ public class SeancesValiderController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Configuration des colonnes pour les séances non validées
-        configurerColonnesNonValidees();
-        
-        // Configuration des colonnes pour les séances validées
-        configurerColonnesValidees();
-        
-        // Ajouter les listeners pour les combobox
-        configurerListenersCombobox();
-    }
-    
-    private void configurerColonnesNonValidees() {
         dateColumn1.setCellValueFactory(data -> 
             new SimpleStringProperty(data.getValue().getDateSeance().format(dateFormatter)));
         
@@ -79,21 +71,20 @@ public class SeancesValiderController implements Initializable {
             Cours cours = CoursDAO.findById(data.getValue().getCoursId());
             if (cours != null) {
                 Utilisateur enseignant = UtilisateurDAO.findById(cours.getEnseignantId());
-                return new SimpleStringProperty(enseignant != null ? 
-                        enseignant.getPrenom() + " " + enseignant.getNom() : "N/A");
+                return new SimpleStringProperty(enseignant != null
+                    ? enseignant.getPrenom() + " " + enseignant.getNom()
+                    : "N/A");
             }
             return new SimpleStringProperty("N/A");
         });
         
-        // Modifier l'affichage pour montrer la durée en heures
         dureeColumn1.setCellValueFactory(data -> {
-            int heures = data.getValue().getDuree() / 60;  // Division entière pour avoir un nombre entier d'heures
+            int heures = data.getValue().getDuree() / 60;
             return new SimpleStringProperty(heures + " h");
         });
         
         contenuColumn1.setCellValueFactory(data -> {
             String contenu = data.getValue().getContenu();
-            // Limiter la longueur du contenu affiché
             if (contenu != null && contenu.length() > 50) {
                 contenu = contenu.substring(0, 47) + "...";
             }
@@ -108,12 +99,10 @@ public class SeancesValiderController implements Initializable {
             @Override
             protected void updateItem(Seance seance, boolean empty) {
                 super.updateItem(seance, empty);
-                
                 if (seance == null || empty) {
                     setGraphic(null);
                     return;
                 }
-                
                 detailsButton.getStyleClass().add("button-secondary");
                 detailsButton.setPrefWidth(80);
                 detailsButton.setOnAction(event -> afficherDetails(seance));
@@ -122,14 +111,12 @@ public class SeancesValiderController implements Initializable {
                 validerButton.setPrefWidth(80);
                 validerButton.setOnAction(event -> validerSeance(seance));
                 
-                HBox buttonBox = new HBox(5);
-                buttonBox.getChildren().addAll(detailsButton, validerButton);
+                HBox buttonBox = new HBox(5, detailsButton, validerButton);
                 setGraphic(buttonBox);
             }
         });
-    }
-    
-    private void configurerColonnesValidees() {
+        
+        // Configuration des colonnes pour les séances validées
         dateColumn2.setCellValueFactory(data -> 
             new SimpleStringProperty(data.getValue().getDateSeance().format(dateFormatter)));
         
@@ -142,21 +129,20 @@ public class SeancesValiderController implements Initializable {
             Cours cours = CoursDAO.findById(data.getValue().getCoursId());
             if (cours != null) {
                 Utilisateur enseignant = UtilisateurDAO.findById(cours.getEnseignantId());
-                return new SimpleStringProperty(enseignant != null ? 
-                        enseignant.getPrenom() + " " + enseignant.getNom() : "N/A");
+                return new SimpleStringProperty(enseignant != null
+                    ? enseignant.getPrenom() + " " + enseignant.getNom()
+                    : "N/A");
             }
             return new SimpleStringProperty("N/A");
         });
         
-        // Modifier l'affichage pour montrer la durée en heures
         dureeColumn2.setCellValueFactory(data -> {
-            double heures = data.getValue().getDuree() / 60;  // Convertir minutes en heures
+            int heures = data.getValue().getDuree() / 60;
             return new SimpleStringProperty(heures + " h");
         });
         
         contenuColumn2.setCellValueFactory(data -> {
             String contenu = data.getValue().getContenu();
-            // Limiter la longueur du contenu affiché
             if (contenu != null && contenu.length() > 50) {
                 contenu = contenu.substring(0, 47) + "...";
             }
@@ -170,23 +156,18 @@ public class SeancesValiderController implements Initializable {
             @Override
             protected void updateItem(Seance seance, boolean empty) {
                 super.updateItem(seance, empty);
-                
                 if (seance == null || empty) {
                     setGraphic(null);
                     return;
                 }
-                
                 detailsButton.getStyleClass().add("button-secondary");
                 detailsButton.setPrefWidth(80);
                 detailsButton.setOnAction(event -> afficherDetails(seance));
-                
                 setGraphic(detailsButton);
             }
         });
-    }
-    
-    private void configurerListenersCombobox() {
-        // Pour les séances non validées
+        
+        // Ajouter les listeners pour les combobox
         coursNonValideesComboBox.getSelectionModel().selectedItemProperty().addListener(
             (observable, oldValue, newValue) -> {
                 if (newValue != null) {
@@ -196,7 +177,6 @@ public class SeancesValiderController implements Initializable {
                 }
             });
         
-        // Pour les séances validées
         coursValideesComboBox.getSelectionModel().selectedItemProperty().addListener(
             (observable, oldValue, newValue) -> {
                 if (newValue != null) {
@@ -205,6 +185,15 @@ public class SeancesValiderController implements Initializable {
                     loadAllSeancesValidees();
                 }
             });
+
+        // --- binding largeur + resize policy pour les deux TableView ---
+        Region parent1 = (Region) seancesNonValideesTableView.getParent();
+        seancesNonValideesTableView.prefWidthProperty().bind(parent1.widthProperty());
+        seancesNonValideesTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        Region parent2 = (Region) seancesValideesTableView.getParent();
+        seancesValideesTableView.prefWidthProperty().bind(parent2.widthProperty());
+        seancesValideesTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
     
     public void setResponsable(Responsable responsable) {
@@ -223,36 +212,25 @@ public class SeancesValiderController implements Initializable {
     private void loadCoursComboBoxes() {
         try {
             List<Cours> cours = CoursDAO.findByClasse(classe.getId());
-            
-            // Pour les séances non validées
             coursNonValideesComboBox.setItems(FXCollections.observableArrayList(cours));
-            
-            // Pour les séances validées
             coursValideesComboBox.setItems(FXCollections.observableArrayList(cours));
             
-            // Configuration de l'affichage des cours
-            javafx.util.StringConverter<Cours> converter = new javafx.util.StringConverter<Cours>() {
+            javafx.util.StringConverter<Cours> converter = new javafx.util.StringConverter<>() {
                 @Override
                 public String toString(Cours cours) {
                     return cours == null ? "Tous les cours" : cours.getIntitule();
                 }
-                
                 @Override
                 public Cours fromString(String string) {
                     return null;
                 }
             };
-            
             coursNonValideesComboBox.setConverter(converter);
             coursValideesComboBox.setConverter(converter);
-            
-            // Ajouter l'option "Tous les cours"
             coursNonValideesComboBox.getItems().add(0, null);
             coursValideesComboBox.getItems().add(0, null);
-            
             coursNonValideesComboBox.getSelectionModel().selectFirst();
             coursValideesComboBox.getSelectionModel().selectFirst();
-            
         } catch (Exception e) {
             System.err.println("Erreur lors du chargement des cours: " + e.getMessage());
             e.printStackTrace();
@@ -261,28 +239,18 @@ public class SeancesValiderController implements Initializable {
     
     private void loadAllSeancesNonValidees() {
         if (classe == null) return;
-        
         try {
-            // Récupérer tous les cours de la classe
             List<Cours> cours = CoursDAO.findByClasse(classe.getId());
-            
-            // Récupérer toutes les séances non validées pour ces cours
-            List<Seance> seancesNonValidees = new ArrayList<>();
+            List<Seance> nonValidees = new ArrayList<>();
             for (Cours c : cours) {
-                List<Seance> seancesCours = SeanceDAO.findByCours(c.getId());
-                
-                // Filtrer pour ne garder que les séances non validées
-                List<Seance> nonValidees = seancesCours.stream()
-                    .filter(s -> !s.isEstValidee())
-                    .collect(Collectors.toList());
-                
-                seancesNonValidees.addAll(nonValidees);
+                nonValidees.addAll(
+                    SeanceDAO.findByCours(c.getId()).stream()
+                      .filter(s -> !s.isEstValidee())
+                      .collect(Collectors.toList())
+                );
             }
-            
-            // Trier les séances par date (les plus récentes d'abord)
-            seancesNonValidees.sort((s1, s2) -> s2.getDateSeance().compareTo(s1.getDateSeance()));
-            
-            seancesNonValideesTableView.setItems(FXCollections.observableArrayList(seancesNonValidees));
+            nonValidees.sort((s1, s2) -> s2.getDateSeance().compareTo(s1.getDateSeance()));
+            seancesNonValideesTableView.setItems(FXCollections.observableArrayList(nonValidees));
         } catch (Exception e) {
             System.err.println("Erreur lors du chargement des séances non validées: " + e.getMessage());
             e.printStackTrace();
@@ -291,28 +259,18 @@ public class SeancesValiderController implements Initializable {
     
     private void loadAllSeancesValidees() {
         if (classe == null) return;
-        
         try {
-            // Récupérer tous les cours de la classe
             List<Cours> cours = CoursDAO.findByClasse(classe.getId());
-            
-            // Récupérer toutes les séances validées pour ces cours
-            List<Seance> seancesValidees = new ArrayList<>();
+            List<Seance> validees = new ArrayList<>();
             for (Cours c : cours) {
-                List<Seance> seancesCours = SeanceDAO.findByCours(c.getId());
-                
-                // Filtrer pour ne garder que les séances validées
-                List<Seance> validees = seancesCours.stream()
-                    .filter(Seance::isEstValidee)
-                    .collect(Collectors.toList());
-                
-                seancesValidees.addAll(validees);
+                validees.addAll(
+                    SeanceDAO.findByCours(c.getId()).stream()
+                      .filter(Seance::isEstValidee)
+                      .collect(Collectors.toList())
+                );
             }
-            
-            // Trier les séances par date (les plus récentes d'abord)
-            seancesValidees.sort((s1, s2) -> s2.getDateSeance().compareTo(s1.getDateSeance()));
-            
-            seancesValideesTableView.setItems(FXCollections.observableArrayList(seancesValidees));
+            validees.sort((s1, s2) -> s2.getDateSeance().compareTo(s1.getDateSeance()));
+            seancesValideesTableView.setItems(FXCollections.observableArrayList(validees));
         } catch (Exception e) {
             System.err.println("Erreur lors du chargement des séances validées: " + e.getMessage());
             e.printStackTrace();
@@ -321,17 +279,11 @@ public class SeancesValiderController implements Initializable {
     
     private void filtrerSeancesNonValidees(int coursId) {
         try {
-            List<Seance> seancesCours = SeanceDAO.findByCours(coursId);
-            
-            // Filtrer pour ne garder que les séances non validées
-            List<Seance> seancesNonValidees = seancesCours.stream()
+            List<Seance> nonValidees = SeanceDAO.findByCours(coursId).stream()
                 .filter(s -> !s.isEstValidee())
+                .sorted((s1, s2) -> s2.getDateSeance().compareTo(s1.getDateSeance()))
                 .collect(Collectors.toList());
-            
-            // Trier les séances par date (les plus récentes d'abord)
-            seancesNonValidees.sort((s1, s2) -> s2.getDateSeance().compareTo(s1.getDateSeance()));
-            
-            seancesNonValideesTableView.setItems(FXCollections.observableArrayList(seancesNonValidees));
+            seancesNonValideesTableView.setItems(FXCollections.observableArrayList(nonValidees));
         } catch (Exception e) {
             System.err.println("Erreur lors du filtrage des séances non validées: " + e.getMessage());
             e.printStackTrace();
@@ -340,17 +292,11 @@ public class SeancesValiderController implements Initializable {
     
     private void filtrerSeancesValidees(int coursId) {
         try {
-            List<Seance> seancesCours = SeanceDAO.findByCours(coursId);
-            
-            // Filtrer pour ne garder que les séances validées
-            List<Seance> seancesValidees = seancesCours.stream()
+            List<Seance> validees = SeanceDAO.findByCours(coursId).stream()
                 .filter(Seance::isEstValidee)
+                .sorted((s1, s2) -> s2.getDateSeance().compareTo(s1.getDateSeance()))
                 .collect(Collectors.toList());
-            
-            // Trier les séances par date (les plus récentes d'abord)
-            seancesValidees.sort((s1, s2) -> s2.getDateSeance().compareTo(s1.getDateSeance()));
-            
-            seancesValideesTableView.setItems(FXCollections.observableArrayList(seancesValidees));
+            seancesValideesTableView.setItems(FXCollections.observableArrayList(validees));
         } catch (Exception e) {
             System.err.println("Erreur lors du filtrage des séances validées: " + e.getMessage());
             e.printStackTrace();
@@ -359,13 +305,12 @@ public class SeancesValiderController implements Initializable {
     
     private void afficherDetails(Seance seance) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/responsable/DetailSeance.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass()
+                .getResource("/fxml/responsable/DetailSeance.fxml"));
             Parent root = loader.load();
-            
             DetailSeanceController controller = loader.getController();
             controller.setSeance(seance);
             controller.setMode("detail");
-            
             Stage stage = new Stage();
             stage.setTitle("Détails de la séance");
             Scene scene = new Scene(root);
@@ -373,7 +318,6 @@ public class SeancesValiderController implements Initializable {
             scene.getStylesheets().add("/css/responsable.css");
             stage.setScene(scene);
             stage.show();
-            
         } catch (IOException e) {
             System.err.println("Erreur lors de l'affichage des détails de la séance: " + e.getMessage());
             e.printStackTrace();
@@ -382,23 +326,18 @@ public class SeancesValiderController implements Initializable {
     
     private void validerSeance(Seance seance) {
         try {
-            // Demander confirmation
             Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
             confirmation.setTitle("Validation de séance");
             confirmation.setHeaderText("Valider la séance ?");
             confirmation.setContentText("Êtes-vous sûr de vouloir valider cette séance ?");
-            
             Optional<ButtonType> result = confirmation.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                
-                // Afficher le détail de la séance avec option de validation
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/responsable/DetailSeance.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass()
+                    .getResource("/fxml/responsable/DetailSeance.fxml"));
                 Parent root = loader.load();
-                
                 DetailSeanceController controller = loader.getController();
                 controller.setSeance(seance);
                 controller.setMode("validation");
-                
                 Stage stage = new Stage();
                 stage.setTitle("Validation de la séance");
                 Scene scene = new Scene(root);
@@ -406,21 +345,14 @@ public class SeancesValiderController implements Initializable {
                 scene.getStylesheets().add("/css/responsable.css");
                 stage.setScene(scene);
                 stage.show();
-                
-                // Rafraîchir la liste après fermeture
                 stage.setOnHidden(e -> {
-                    // Mettre à jour les deux tableaux
-                    Cours coursNonValidees = coursNonValideesComboBox.getValue();
-                    Cours coursValidees = coursValideesComboBox.getValue();
-                    
-                    if (coursNonValidees != null) {
-                        filtrerSeancesNonValidees(coursNonValidees.getId());
+                    if (coursNonValideesComboBox.getValue() != null) {
+                        filtrerSeancesNonValidees(coursNonValideesComboBox.getValue().getId());
                     } else {
                         loadAllSeancesNonValidees();
                     }
-                    
-                    if (coursValidees != null) {
-                        filtrerSeancesValidees(coursValidees.getId());
+                    if (coursValideesComboBox.getValue() != null) {
+                        filtrerSeancesValidees(coursValideesComboBox.getValue().getId());
                     } else {
                         loadAllSeancesValidees();
                     }

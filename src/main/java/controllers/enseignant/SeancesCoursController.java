@@ -1,3 +1,4 @@
+// src/main/java/controllers/enseignant/SeancesCoursController.java
 package controllers.enseignant;
 
 import dao.ClasseDAO;
@@ -13,6 +14,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.Region;            // <— ajouté pour le binding
 import javafx.stage.Stage;
 import models.Classe;
 import models.Cours;
@@ -36,15 +38,15 @@ public class SeancesCoursController implements Initializable {
     @FXML private Button ajouterSeanceButton;
     @FXML private TableView<Seance> seancesTableView;
     @FXML private TableColumn<Seance, String> dateColumn;
-    @FXML private TableColumn<Seance, String> dureeColumn;  // Modifié pour utiliser String au lieu de Number
+    @FXML private TableColumn<Seance, String> dureeColumn;
     @FXML private TableColumn<Seance, String> contenuColumn;
     @FXML private TableColumn<Seance, Boolean> statutColumn;
     @FXML private Button closeButton;
     
     private Cours cours;
     private Enseignant enseignant;
-    private DecimalFormat df = new DecimalFormat("#.##");
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private final DecimalFormat df = new DecimalFormat("#.##");
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -52,9 +54,8 @@ public class SeancesCoursController implements Initializable {
         dateColumn.setCellValueFactory(data -> 
             new SimpleStringProperty(data.getValue().getDateSeance().format(dateFormatter)));
         
-        // Modifier l'affichage pour montrer la durée en heures
         dureeColumn.setCellValueFactory(data -> {
-            int heures = data.getValue().getDuree() / 60;  // Division entière pour avoir un nombre entier d'heures
+            int heures = data.getValue().getDuree() / 60;
             return new SimpleStringProperty(heures + " h");
         });
         
@@ -63,7 +64,6 @@ public class SeancesCoursController implements Initializable {
         
         statutColumn.setCellValueFactory(data -> 
             new SimpleBooleanProperty(data.getValue().isEstValidee()));
-        
         statutColumn.setCellFactory(column -> new TableCell<Seance, Boolean>() {
             @Override
             protected void updateItem(Boolean estValidee, boolean empty) {
@@ -71,17 +71,20 @@ public class SeancesCoursController implements Initializable {
                 if (empty || estValidee == null) {
                     setText(null);
                     setStyle("");
+                } else if (estValidee) {
+                    setText("Validée");
+                    setStyle("-fx-text-fill: #0a6d4c; -fx-font-weight: bold;");
                 } else {
-                    if (estValidee) {
-                        setText("Validée");
-                        setStyle("-fx-text-fill: #0a6d4c; -fx-font-weight: bold;");
-                    } else {
-                        setText("En attente");
-                        setStyle("-fx-text-fill: #e67e22; -fx-font-weight: bold;");
-                    }
+                    setText("En attente");
+                    setStyle("-fx-text-fill: #e67e22; -fx-font-weight: bold;");
                 }
             }
         });
+
+        // --- AJOUTÉ : binding largeur + resize policy ---
+        Region parent = (Region) seancesTableView.getParent();
+        seancesTableView.prefWidthProperty().bind(parent.widthProperty());
+        seancesTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
     
     public void setCours(Cours cours) {
@@ -100,19 +103,16 @@ public class SeancesCoursController implements Initializable {
         titreCoursLabel.setText("Séances du cours: " + cours.getIntitule());
         volumeHoraireLabel.setText(cours.getVolumeHoraire() + " heures");
         
-        // Récupérer la classe associée au cours
         Classe classe = ClasseDAO.findByCoursId(cours.getId());
         classeLabel.setText(classe != null ? classe.getNom() : "Non assignée");
         
-        // Calculer le pourcentage de réalisation
-        double pourcentage = FichePedagogiqueDAO.calculerPourcentageRealisation(cours.getId());
-        pourcentageLabel.setText(df.format(pourcentage) + " %");
+        double pct = FichePedagogiqueDAO.calculerPourcentageRealisation(cours.getId());
+        pourcentageLabel.setText(df.format(pct) + " %");
     }
     
     private void loadSeances() {
         try {
             List<Seance> seances = SeanceDAO.findByCours(cours.getId());
-            // Trier les séances par date (les plus récentes d'abord)
             seances.sort((s1, s2) -> s2.getDateSeance().compareTo(s1.getDateSeance()));
             seancesTableView.setItems(FXCollections.observableArrayList(seances));
         } catch (Exception e) {
@@ -124,29 +124,25 @@ public class SeancesCoursController implements Initializable {
     @FXML
     private void handleAjouterSeance(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/enseignant/AjoutSeance.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass()
+                .getResource("/fxml/enseignant/AjoutSeance.fxml"));
             Parent root = loader.load();
-            
-            AjoutSeanceController controller = loader.getController();
-            controller.setEnseignant(enseignant);
-            controller.setCoursPreselectionne(cours);
+            AjoutSeanceController ctrl = loader.getController();
+            ctrl.setEnseignant(enseignant);
+            ctrl.setCoursPreselectionne(cours);
             
             Stage stage = new Stage();
             stage.setTitle("Ajouter une séance");
             Scene scene = new Scene(root);
-            scene.getStylesheets().add("/css/common.css");
-            scene.getStylesheets().add("/css/enseignant.css");
+            scene.getStylesheets().addAll("/css/common.css","/css/enseignant.css");
             stage.setScene(scene);
             stage.show();
-            
-            // Rafraîchir les données après fermeture
             stage.setOnHidden(e -> {
                 loadCoursDetails();
                 loadSeances();
             });
-            
         } catch (IOException e) {
-            System.err.println("Erreur lors du chargement de la vue d'ajout de séance: " + e.getMessage());
+            System.err.println("Erreur ajout séance: " + e.getMessage());
             e.printStackTrace();
         }
     }

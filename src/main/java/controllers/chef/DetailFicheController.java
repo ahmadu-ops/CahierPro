@@ -1,3 +1,4 @@
+// src/main/java/controllers/chef/DetailFicheController.java
 package controllers.chef;
 
 import dao.ClasseDAO;
@@ -11,20 +12,15 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.layout.Region;            // <— ajouté pour le binding
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import models.Classe;
-import models.Cours;
-import models.FichePedagogique;
-import models.Seance;
-import models.Utilisateur;
+import javafx.scene.Scene;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import models.*;
 import views.utils.PDFGenerator;
 
 import java.io.File;
@@ -55,12 +51,11 @@ public class DetailFicheController implements Initializable {
     
     private int ficheId;
     private FichePedagogiqueDAO.FicheInfosComplete infos;
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    private DecimalFormat df = new DecimalFormat("#.##");
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private final DecimalFormat df = new DecimalFormat("#.##");
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Configuration des colonnes du tableau des séances
         dateSeanceColumn.setCellValueFactory(data -> 
             new SimpleStringProperty(data.getValue().getDateSeance().format(dateFormatter)));
         
@@ -72,8 +67,12 @@ public class DetailFicheController implements Initializable {
         
         valideeColumn.setCellValueFactory(data -> 
             new SimpleBooleanProperty(data.getValue().isEstValidee()));
-        
         valideeColumn.setCellFactory(column -> new CheckBoxTableCell<>());
+
+        // --- AJOUTÉ : binding largeur + resize policy ---
+        Region parent = (Region) seancesTableView.getParent();
+        seancesTableView.prefWidthProperty().bind(parent.widthProperty());
+        seancesTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
     
     public void setFicheId(int ficheId) {
@@ -84,86 +83,59 @@ public class DetailFicheController implements Initializable {
     private void loadFicheDetails() {
         try {
             infos = FichePedagogiqueDAO.getInfosComplete(ficheId);
-            if (infos == null) {
-                showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger les détails de la fiche.");
-                return;
-            }
+            if (infos == null) throw new RuntimeException("Infos null");
             
-            FichePedagogique fiche = infos.getFiche();
-            Cours cours = infos.getCours();
-            Utilisateur enseignant = infos.getEnseignant();
-            Classe classe = ClasseDAO.findByCoursId(cours.getId());
+            FichePedagogique f = infos.getFiche();
+            Cours c = infos.getCours();
+            Utilisateur ens = infos.getEnseignant();
+            Classe cl = ClasseDAO.findByCoursId(c.getId());
             
-            // Remplir les informations de base
-            coursLabel.setText(cours.getIntitule());
-            enseignantLabel.setText(enseignant.getPrenom() + " " + enseignant.getNom());
-            classeLabel.setText(classe != null ? classe.getNom() : "Non définie");
-            dateGenerationLabel.setText(fiche.getDateGeneration().format(dateFormatter));
-            pourcentageLabel.setText(df.format(fiche.getPourcentageRealisation()) + " %");
-            volumeHoraireLabel.setText(cours.getVolumeHoraire() + " h");
+            coursLabel.setText(c.getIntitule());
+            enseignantLabel.setText(ens.getPrenom()+" "+ens.getNom());
+            classeLabel.setText(cl!=null?cl.getNom():"Non définie");
+            dateGenerationLabel.setText(f.getDateGeneration().format(dateFormatter));
+            pourcentageLabel.setText(df.format(f.getPourcentageRealisation())+" %");
+            volumeHoraireLabel.setText(c.getVolumeHoraire()+" h");
+            commentaireTextArea.setText(f.getCommentaire());
             
-            // Remplir le commentaire
-            commentaireTextArea.setText(fiche.getCommentaire());
-            
-            // Remplir le tableau des séances
             seancesTableView.setItems(FXCollections.observableArrayList(infos.getSeances()));
         } catch (Exception e) {
-            System.err.println("Erreur lors du chargement des détails de la fiche: " + e.getMessage());
+            System.err.println("Erreur chargement fiche: "+e.getMessage());
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger les détails de la fiche: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR,"Erreur",
+                      "Impossible de charger les détails: "+e.getMessage());
         }
     }
     
     @FXML
     private void handleExportPdf(ActionEvent event) {
         try {
-            // Créer un FileChooser pour permettre à l'utilisateur de choisir où sauvegarder le PDF
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Enregistrer la fiche pédagogique");
-            
-            // Proposer un nom de fichier par défaut
-            String defaultFileName = "fiche_" + ficheId + "_" + 
-                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + ".pdf";
-            fileChooser.setInitialFileName(defaultFileName);
-            
-            // Définir les filtres pour n'afficher que les fichiers PDF
-            FileChooser.ExtensionFilter extFilter = 
-                new FileChooser.ExtensionFilter("Documents PDF (*.pdf)", "*.pdf");
-            fileChooser.getExtensionFilters().add(extFilter);
-            
-            // Afficher la fenêtre de dialogue pour choisir l'emplacement et le nom du fichier
-            File file = fileChooser.showSaveDialog(exportPdfButton.getScene().getWindow());
-            
-            if (file != null) {
-                String filePath = file.getAbsolutePath();
-                
-                // Générer le PDF à l'emplacement choisi
-                boolean success = PDFGenerator.genererPDF(ficheId, filePath);
-                
-                if (!success) {
-                    showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'exporter la fiche en PDF.");
-                }
+            FileChooser fc = new FileChooser();
+            fc.setTitle("Enregistrer PDF");
+            String def = "fiche_"+ficheId+"_"+LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))+".pdf";
+            fc.setInitialFileName(def);
+            fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF","*.pdf"));
+            File file = fc.showSaveDialog(exportPdfButton.getScene().getWindow());
+            if (file!=null && !PDFGenerator.genererPDF(ficheId,file.getAbsolutePath())) {
+                showAlert(Alert.AlertType.ERROR,"Erreur","Impossible d'exporter en PDF.");
             }
-            // Si l'utilisateur annule, ne rien faire
-            
         } catch (Exception e) {
-            System.err.println("Erreur lors de l'export de la fiche: " + e.getMessage());
+            System.err.println("Erreur export PDF: "+e.getMessage());
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'exporter la fiche en PDF: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR,"Erreur","Export PDF échoué: "+e.getMessage());
         }
     }
     
     @FXML
     private void handleClose(ActionEvent event) {
-        Stage stage = (Stage) closeButton.getScene().getWindow();
-        stage.close();
+        ((Stage)closeButton.getScene().getWindow()).close();
     }
     
-    private void showAlert(Alert.AlertType type, String title, String content) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
+    private void showAlert(Alert.AlertType t,String title,String content) {
+        Alert a = new Alert(t);
+        a.setTitle(title);
+        a.setHeaderText(null);
+        a.setContentText(content);
+        a.showAndWait();
     }
 }

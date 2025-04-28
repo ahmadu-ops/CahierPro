@@ -1,3 +1,4 @@
+// src/main/java/controllers/chef/GestionFichesController.java
 package controllers.chef;
 
 import dao.ClasseDAO;
@@ -16,9 +17,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import models.*;
+import models.Classe;
+import models.Cours;
+import models.FichePedagogique;
+import models.Utilisateur;
 import views.utils.PDFGenerator;
 
 import java.io.File;
@@ -42,43 +47,48 @@ public class GestionFichesController implements Initializable {
     @FXML private TableColumn<FichePedagogique, FichePedagogique> actionsColumn;
 
     private Utilisateur utilisateur;
-    private DecimalFormat df = new DecimalFormat("#.##");
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private final DecimalFormat df = new DecimalFormat("#.##");
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Configurer les cellules de la table
-        dateColumn.setCellValueFactory(data -> 
-            new SimpleStringProperty(data.getValue().getDateGeneration().format(dateFormatter)));
-        
+        dateColumn.setCellValueFactory(data ->
+            new SimpleStringProperty(
+                data.getValue().getDateGeneration().format(dateFormatter)
+            )
+        );
+
         coursColumn.setCellValueFactory(data -> {
-            Cours cours = CoursDAO.findById(data.getValue().getCoursId());
-            return new SimpleStringProperty(cours != null ? cours.getIntitule() : "N/A");
+            Cours c = CoursDAO.findById(data.getValue().getCoursId());
+            return new SimpleStringProperty(c != null ? c.getIntitule() : "N/A");
         });
-        
+
         enseignantColumn.setCellValueFactory(data -> {
-            Cours cours = CoursDAO.findById(data.getValue().getCoursId());
-            if (cours != null) {
-                Utilisateur enseignant = UtilisateurDAO.findById(cours.getEnseignantId());
-                return new SimpleStringProperty(enseignant != null ? 
-                        enseignant.getPrenom() + " " + enseignant.getNom() : "N/A");
+            Cours c = CoursDAO.findById(data.getValue().getCoursId());
+            if (c != null) {
+                Utilisateur ens = UtilisateurDAO.findById(c.getEnseignantId());
+                return new SimpleStringProperty(
+                    ens != null
+                        ? ens.getPrenom() + " " + ens.getNom()
+                        : "N/A"
+                );
             }
             return new SimpleStringProperty("N/A");
         });
-        
+
         classeColumn.setCellValueFactory(data -> {
-            Cours cours = CoursDAO.findById(data.getValue().getCoursId());
-            if (cours != null) {
-                Classe classe = ClasseDAO.findByCoursId(cours.getId());
-                return new SimpleStringProperty(classe != null ? classe.getNom() : "N/A");
+            Cours c = CoursDAO.findById(data.getValue().getCoursId());
+            if (c != null) {
+                Classe cl = ClasseDAO.findByCoursId(c.getId());
+                return new SimpleStringProperty(cl != null ? cl.getNom() : "N/A");
             }
             return new SimpleStringProperty("N/A");
         });
-        
-        pourcentageColumn.setCellValueFactory(data -> 
-            new SimpleDoubleProperty(data.getValue().getPourcentageRealisation()));
-        
-        // Formatter la colonne de pourcentage
+
+        pourcentageColumn.setCellValueFactory(data ->
+            new SimpleDoubleProperty(data.getValue().getPourcentageRealisation())
+        );
         pourcentageColumn.setCellFactory(column -> new TableCell<FichePedagogique, Number>() {
             @Override
             protected void updateItem(Number item, boolean empty) {
@@ -90,105 +100,45 @@ public class GestionFichesController implements Initializable {
                 }
             }
         });
-        
-        // Configurer la colonne d'actions
-        actionsColumn.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue()));
+
+        actionsColumn.setCellValueFactory(param ->
+            new SimpleObjectProperty<>(param.getValue())
+        );
         actionsColumn.setCellFactory(param -> new TableCell<FichePedagogique, FichePedagogique>() {
             private final Button viewButton = new Button("Voir");
             private final Button exportButton = new Button("Exporter");
-            
+
             @Override
             protected void updateItem(FichePedagogique fiche, boolean empty) {
                 super.updateItem(fiche, empty);
-                
-                if (fiche == null) {
+                if (fiche == null || empty) {
                     setGraphic(null);
                     return;
                 }
-                
-                // Configurer les boutons
                 viewButton.getStyleClass().add("button-secondary");
                 viewButton.setOnAction(event -> viewFiche(fiche));
-                
+
                 exportButton.getStyleClass().add("button-primary");
                 exportButton.setOnAction(event -> exportFiche(fiche));
-                
-                // Créer un conteneur horizontal pour les boutons
-                HBox hbox = new HBox(5);
-                hbox.getChildren().addAll(viewButton, exportButton);
+
+                HBox hbox = new HBox(5, viewButton, exportButton);
                 setGraphic(hbox);
             }
         });
-        
+
         // Charger les fiches
         loadFiches();
+
+        // NOUVEAU : binding largeur + resize policy
+        Region parent = (Region) fichesTableView.getParent();
+        fichesTableView.prefWidthProperty().bind(parent.widthProperty());
+        fichesTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
-    
-    private void viewFiche(FichePedagogique fiche) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/chef/DetailFiche.fxml"));
-            Parent root = loader.load();
-            
-            DetailFicheController controller = loader.getController();
-            controller.setFicheId(fiche.getId());
-            
-            Stage stage = new Stage();
-            stage.setTitle("Détail de la fiche pédagogique");
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add("/css/common.css");
-            scene.getStylesheets().add("/css/chef.css");
-            stage.setScene(scene);
-            stage.show();
-            
-        } catch (IOException e) {
-            System.err.println("Erreur lors du chargement de la vue détail fiche: " + e.getMessage());
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'afficher les détails de la fiche.");
-        }
-    }
-    
-    private void exportFiche(FichePedagogique fiche) {
-        try {
-            // Créer un FileChooser pour permettre à l'utilisateur de choisir où sauvegarder le PDF
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Enregistrer la fiche pédagogique");
-            
-            // Proposer un nom de fichier par défaut
-            String defaultFileName = "fiche_" + fiche.getId() + "_" + 
-                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + ".pdf";
-            fileChooser.setInitialFileName(defaultFileName);
-            
-            // Définir les filtres pour n'afficher que les fichiers PDF
-            FileChooser.ExtensionFilter extFilter = 
-                new FileChooser.ExtensionFilter("Documents PDF (*.pdf)", "*.pdf");
-            fileChooser.getExtensionFilters().add(extFilter);
-            
-            // Afficher la fenêtre de dialogue pour choisir l'emplacement et le nom du fichier
-            File file = fileChooser.showSaveDialog(fichesTableView.getScene().getWindow());
-            
-            if (file != null) {
-                String filePath = file.getAbsolutePath();
-                
-                // Générer le PDF à l'emplacement choisi
-                boolean success = PDFGenerator.genererPDF(fiche.getId(), filePath);
-                
-                if (!success) {
-                    showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'exporter la fiche en PDF.");
-                }
-            }
-            // Si l'utilisateur annule, ne rien faire
-            
-        } catch (Exception e) {
-            System.err.println("Erreur lors de l'export de la fiche: " + e.getMessage());
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'exporter la fiche en PDF: " + e.getMessage());
-        }
-    }
-    
+
     public void setUtilisateur(Utilisateur utilisateur) {
         this.utilisateur = utilisateur;
     }
-    
+
     private void loadFiches() {
         try {
             List<FichePedagogique> fiches = FichePedagogiqueDAO.findAll();
@@ -198,13 +148,15 @@ public class GestionFichesController implements Initializable {
             e.printStackTrace();
         }
     }
-    
+
     @FXML
     private void handleGenererFiche(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/chef/GenerationFiche.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/fxml/chef/GenerationFiche.fxml")
+            );
             Parent root = loader.load();
-            
+
             Stage stage = new Stage();
             stage.setTitle("Générer une Fiche Pédagogique");
             Scene scene = new Scene(root);
@@ -212,16 +164,71 @@ public class GestionFichesController implements Initializable {
             scene.getStylesheets().add("/css/chef.css");
             stage.setScene(scene);
             stage.show();
-            
-            // Recharger les fiches après la fermeture de la fenêtre
+
             stage.setOnHidden(e -> loadFiches());
-            
         } catch (IOException e) {
-            System.err.println("Erreur lors du chargement de la vue Génération Fiche: " + e.getMessage());
+            System.err.println(
+                "Erreur lors du chargement de la vue Génération Fiche: " + e.getMessage()
+            );
             e.printStackTrace();
         }
     }
-    
+
+    private void viewFiche(FichePedagogique fiche) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/fxml/chef/DetailFiche.fxml")
+            );
+            Parent root = loader.load();
+            controllers.chef.DetailFicheController controller = loader.getController();
+            controller.setFicheId(fiche.getId());
+
+            Stage stage = new Stage();
+            stage.setTitle("Détail de la fiche pédagogique");
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add("/css/common.css");
+            scene.getStylesheets().add("/css/chef.css");
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            System.err.println(
+                "Erreur lors du chargement de la vue détail fiche: " + e.getMessage()
+            );
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                      "Impossible d'afficher les détails de la fiche.");
+        }
+    }
+
+    private void exportFiche(FichePedagogique fiche) {
+        try {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Enregistrer la fiche pédagogique");
+            String defaultName = "fiche_"
+                + fiche.getId() + "_"
+                + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
+                + ".pdf";
+            fileChooser.setInitialFileName(defaultName);
+            fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Documents PDF (*.pdf)", "*.pdf")
+            );
+
+            File file = fileChooser.showSaveDialog(fichesTableView.getScene().getWindow());
+            if (file != null) {
+                boolean success = PDFGenerator.genererPDF(fiche.getId(), file.getAbsolutePath());
+                if (!success) {
+                    showAlert(Alert.AlertType.ERROR, "Erreur",
+                              "Impossible d'exporter la fiche en PDF.");
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur lors de l'export de la fiche: " + e.getMessage());
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                      "Impossible d'exporter la fiche en PDF: " + e.getMessage());
+        }
+    }
+
     private void showAlert(Alert.AlertType type, String title, String content) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
