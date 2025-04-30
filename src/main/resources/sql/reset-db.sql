@@ -1,4 +1,3 @@
--- Active: 1744738886314@@127.0.0.1@3306@gestion_cahier_texte
 -- Utiliser la bonne base
 USE gestion_cahier_texte;
 

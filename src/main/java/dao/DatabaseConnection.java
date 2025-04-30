@@ -9,7 +9,7 @@ public class DatabaseConnection {
 
     private static final String URL = "jdbc:mysql://localhost:3306/gestion_cahier_texte"; // Remplace "nom_de_ta_base" par le nom de ta base de données
     private static final String USER = "root"; // Remplace par ton nom d'utilisateur MySQL
-    private static final String PASSWORD = "2008"; // Remplace par ton mot de passe MySQL, si nécessaire
+    private static final String PASSWORD = "   "; // Remplace par ton mot de passe MySQL, si nécessaire
 
     // Méthode pour obtenir la connexion
     public static Connection getConnection() throws SQLException {

@@ -1,4 +1,3 @@
--- Active: 1744738886314@@127.0.0.1@3306@gestion_cahier_texte
 -- Création de la base de données (si elle n'existe pas déjà)
 CREATE DATABASE IF NOT EXISTS gestion_cahier_texte;
 USE gestion_cahier_texte;
