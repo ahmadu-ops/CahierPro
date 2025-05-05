@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" styleClass="form-container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.responsable.DetailSeanceController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="600.0" styleClass="form-container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.responsable.DetailSeanceController">
    <top>
       <HBox alignment="CENTER_LEFT" prefHeight="80.0" spacing="15.0" styleClass="form-header" BorderPane.alignment="CENTER">
          <children>
@@ -22,9 +22,9 @@
       </HBox>
    </top>
    <center>
-      <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0" styleClass="form-content" BorderPane.alignment="CENTER">
+      <VBox prefHeight="200.0" prefWidth="100.0" spacing="30.0" styleClass="form-content" BorderPane.alignment="CENTER">
          <children>
-            <GridPane hgap="20.0" vgap="10.0">
+            <GridPane hgap="20.0" vgap="20.0">
               <columnConstraints>
                 <javafx.scene.layout.ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
                 <javafx.scene.layout.ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
@@ -35,48 +35,48 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <VBox spacing="5.0">
+                  <VBox spacing="0.0">
                      <children>
                         <Label styleClass="form-label" text="Cours" />
-                        <Label fx:id="coursLabel" styleClass="form-value" text="--" />
+                        <Label fx:id="coursLabel" styleClass="form-value" text="--" style="-fx-text-fill: #000; -fx-font-weight: normal; -fx-font-size: 12px" />
                      </children>
                   </VBox>
-                  <VBox spacing="5.0" GridPane.columnIndex="1">
+                  <VBox spacing="0.0" GridPane.columnIndex="1">
                      <children>
                         <Label styleClass="form-label" text="Enseignant" />
-                        <Label fx:id="enseignantLabel" styleClass="form-value" text="--" />
+                        <Label fx:id="enseignantLabel" styleClass="form-value" text="--" style="-fx-text-fill: #000; -fx-font-weight: normal; -fx-font-size: 12px"/>
                      </children>
                   </VBox>
-                  <VBox spacing="5.0" GridPane.columnIndex="2">
+                  <VBox spacing="0.0" GridPane.columnIndex="2">
                      <children>
                         <Label styleClass="form-label" text="Classe" />
-                        <Label fx:id="classeLabel" styleClass="form-value" text="--" />
+                        <Label fx:id="classeLabel" styleClass="form-value" text="--" style="-fx-text-fill: #000; -fx-font-weight: normal; -fx-font-size: 12px"/>
                      </children>
                   </VBox>
-                  <VBox spacing="5.0" GridPane.rowIndex="1">
+                  <VBox spacing="0.0" GridPane.rowIndex="1">
                      <children>
                         <Label styleClass="form-label" text="Date" />
-                        <Label fx:id="dateLabel" styleClass="form-value" text="--" />
+                        <Label fx:id="dateLabel" styleClass="form-value" text="--" style="-fx-text-fill: #000; -fx-font-weight: normal; -fx-font-size: 12px"/>
                      </children>
                   </VBox>
-                  <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <VBox spacing="0.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <children>
                         <Label styleClass="form-label" text="Durée" />
-                        <Label fx:id="dureeLabel" styleClass="form-value" text="--" />
+                        <Label fx:id="dureeLabel" styleClass="form-value" text="--" style="-fx-text-fill: #000; -fx-font-weight: normal; -fx-font-size: 12px"/>
                      </children>
                   </VBox>
-                  <VBox spacing="5.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                  <VBox spacing="0.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                      <children>
                         <Label styleClass="form-label" text="Statut" />
-                        <Label fx:id="statutLabel" styleClass="form-value" text="--" />
+                        <Label fx:id="statutLabel" styleClass="form-value" text="--" style="-fx-font-size: 10px"/>
                      </children>
                   </VBox>
                </children>
             </GridPane>
-            <VBox spacing="10.0" VBox.vgrow="ALWAYS">
+            <VBox spacing="20.0" VBox.vgrow="ALWAYS">
                <children>
                   <Label styleClass="section-title" text="Contenu de la séance" />
-                  <TextArea fx:id="contenuTextArea" editable="false" prefHeight="200.0" prefWidth="200.0" styleClass="form-control" wrapText="true" />
+                  <TextArea fx:id="contenuTextArea" editable="false" prefHeight="80.0" prefWidth="200.0" styleClass="form-control" wrapText="true" />
                </children>
             </VBox>
          </children>

@@ -110,9 +110,9 @@ public class DetailSeanceController implements Initializable {
             
             // Appliquer un style au statut
             if (seance.isEstValidee()) {
-                statutLabel.setStyle("-fx-text-fill: #0a6d4c; -fx-font-weight: bold;");
+                statutLabel.setStyle("-fx-text-fill: #0a6d4c");
             } else {
-                statutLabel.setStyle("-fx-text-fill: #e67e22; -fx-font-weight: bold;");
+                statutLabel.setStyle("-fx-text-fill: #e67e22");
             }
             
         } catch (Exception e) {

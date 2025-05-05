@@ -18,13 +18,13 @@
       </HBox>
       <TableView fx:id="seancesTableView" prefHeight="500.0" VBox.vgrow="ALWAYS">
         <columns>
-          <TableColumn fx:id="dateColumn" prefWidth="120.0" text="Date" />
-          <TableColumn fx:id="coursColumn" prefWidth="150.0" text="Cours" />
-          <TableColumn fx:id="enseignantColumn" prefWidth="150.0" text="Enseignant" />
-          <TableColumn fx:id="dureeColumn" prefWidth="80.0" text="Durée (min)" />
-          <TableColumn fx:id="contenuColumn" prefWidth="200.0" text="Contenu" />
-          <TableColumn fx:id="statutColumn" prefWidth="100.0" text="Statut" />
-          <TableColumn fx:id="actionsColumn" prefWidth="120.0" text="Actions" />
+          <TableColumn fx:id="dateColumn"  text="Date" />
+          <TableColumn fx:id="coursColumn"  text="Cours" />
+          <TableColumn fx:id="enseignantColumn"  text="Enseignant" />
+          <TableColumn fx:id="dureeColumn" text="Durée (min)" />
+          <TableColumn fx:id="contenuColumn"  text="Contenu" />
+          <TableColumn fx:id="statutColumn"  text="Statut" />
+          <TableColumn fx:id="actionsColumn" text="Actions" />
         </columns>
       </TableView>
    </children>

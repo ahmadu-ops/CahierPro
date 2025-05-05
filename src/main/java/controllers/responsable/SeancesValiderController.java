@@ -93,7 +93,6 @@ public class SeancesValiderController implements Initializable {
         
         actionsColumn1.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue()));
         actionsColumn1.setCellFactory(param -> new TableCell<Seance, Seance>() {
-            private final Button detailsButton = new Button("Détails");
             private final Button validerButton = new Button("Valider");
             
             @Override
@@ -103,16 +102,12 @@ public class SeancesValiderController implements Initializable {
                     setGraphic(null);
                     return;
                 }
-                detailsButton.getStyleClass().add("button-secondary");
-                detailsButton.setPrefWidth(80);
-                detailsButton.setOnAction(event -> afficherDetails(seance));
                 
                 validerButton.getStyleClass().add("button-primary");
                 validerButton.setPrefWidth(80);
                 validerButton.setOnAction(event -> validerSeance(seance));
                 
-                HBox buttonBox = new HBox(5, detailsButton, validerButton);
-                setGraphic(buttonBox);
+                setGraphic(validerButton);
             }
         });
         
@@ -326,38 +321,33 @@ public class SeancesValiderController implements Initializable {
     
     private void validerSeance(Seance seance) {
         try {
-            Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
-            confirmation.setTitle("Validation de séance");
-            confirmation.setHeaderText("Valider la séance ?");
-            confirmation.setContentText("Êtes-vous sûr de vouloir valider cette séance ?");
-            Optional<ButtonType> result = confirmation.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.OK) {
-                FXMLLoader loader = new FXMLLoader(getClass()
-                    .getResource("/fxml/responsable/DetailSeance.fxml"));
-                Parent root = loader.load();
-                DetailSeanceController controller = loader.getController();
-                controller.setSeance(seance);
-                controller.setMode("validation");
-                Stage stage = new Stage();
-                stage.setTitle("Validation de la séance");
-                Scene scene = new Scene(root);
-                scene.getStylesheets().add("/css/common.css");
-                scene.getStylesheets().add("/css/responsable.css");
-                stage.setScene(scene);
-                stage.show();
-                stage.setOnHidden(e -> {
-                    if (coursNonValideesComboBox.getValue() != null) {
-                        filtrerSeancesNonValidees(coursNonValideesComboBox.getValue().getId());
-                    } else {
-                        loadAllSeancesNonValidees();
-                    }
-                    if (coursValideesComboBox.getValue() != null) {
-                        filtrerSeancesValidees(coursValideesComboBox.getValue().getId());
-                    } else {
-                        loadAllSeancesValidees();
-                    }
-                });
-            }
+
+            FXMLLoader loader = new FXMLLoader(getClass()
+                .getResource("/fxml/responsable/DetailSeance.fxml"));
+            Parent root = loader.load();
+            DetailSeanceController controller = loader.getController();
+            controller.setSeance(seance);
+            controller.setMode("validation");
+            Stage stage = new Stage();
+            stage.setTitle("Validation de la séance");
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add("/css/common.css");
+            scene.getStylesheets().add("/css/responsable.css");
+            stage.setScene(scene);
+            stage.show();
+            stage.setOnHidden(e -> {
+                if (coursNonValideesComboBox.getValue() != null) {
+                    filtrerSeancesNonValidees(coursNonValideesComboBox.getValue().getId());
+                } else {
+                    loadAllSeancesNonValidees();
+                }
+                if (coursValideesComboBox.getValue() != null) {
+                    filtrerSeancesValidees(coursValideesComboBox.getValue().getId());
+                } else {
+                    loadAllSeancesValidees();
+                }
+            });
+            
         } catch (Exception e) {
             System.err.println("Erreur lors de la validation de la séance: " + e.getMessage());
             e.printStackTrace();

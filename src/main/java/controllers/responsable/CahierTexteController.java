@@ -112,14 +112,7 @@ public class CahierTexteController implements Initializable {
                 detailsButton.getStyleClass().add("button-secondary");
                 detailsButton.setOnAction(event -> afficherDetails(seance));
                 
-                HBox buttonBox = new HBox(5, detailsButton);
-                if (!seance.isEstValidee()) {
-                    Button validerButton = new Button("Valider");
-                    validerButton.getStyleClass().add("button-primary");
-                    validerButton.setOnAction(e -> validerSeance(seance));
-                    buttonBox.getChildren().add(validerButton);
-                }
-                setGraphic(buttonBox);
+                setGraphic(detailsButton);
             }
         });
         
@@ -211,35 +204,5 @@ public class CahierTexteController implements Initializable {
             System.err.println("Erreur détails séance: " + e.getMessage());
             e.printStackTrace();
         }
-    }
-    
-    private void validerSeance(Seance seance) {
-        try {
-            Alert conf = new Alert(Alert.AlertType.CONFIRMATION);
-            conf.setTitle("Validation de séance");
-            conf.setHeaderText("Valider la séance ?");
-            conf.setContentText("Confirmez-vous ?");
-            Optional<ButtonType> res = conf.showAndWait();
-            if (res.isPresent() && res.get() == ButtonType.OK) {
-                FXMLLoader loader = new FXMLLoader(getClass()
-                    .getResource("/fxml/responsable/DetailSeance.fxml"));
-                Parent root = loader.load();
-                DetailSeanceController ctrl = loader.getController();
-                ctrl.setSeance(seance);
-                ctrl.setMode("validation");
-                Stage st = new Stage();
-                st.setTitle("Validation");
-                st.setScene(new Scene(root));
-                st.getScene().getStylesheets().addAll("/css/common.css","/css/responsable.css");
-                st.show();
-                st.setOnHidden(e -> {
-                    if (coursComboBox.getValue() != null) filtrerSeances(coursComboBox.getValue().getId());
-                    else loadAllSeances();
-                });
-            }
-        } catch (Exception e) {
-            System.err.println("Erreur validation: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
+    }    
 }
