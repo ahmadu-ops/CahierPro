@@ -13,20 +13,11 @@
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="form-container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.chef.DetailFicheController">
-   <top>
-      <HBox alignment="CENTER_LEFT" prefHeight="80.0" spacing="15.0" styleClass="form-header" BorderPane.alignment="CENTER">
-         <children>
-            <Label styleClass="form-title" text="Détail de la Fiche Pédagogique" />
-         </children>
-         <padding>
-            <Insets left="30.0" right="30.0" />
-         </padding>
-      </HBox>
-   </top>
+
    <center>
       <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0" styleClass="form-content" BorderPane.alignment="CENTER">
          <children>
-            <GridPane hgap="20.0" vgap="10.0">
+            <GridPane hgap="20.0" vgap="20.0">
               <columnConstraints>
                 <javafx.scene.layout.ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
                 <javafx.scene.layout.ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
@@ -92,7 +83,7 @@
             <VBox spacing="10.0">
                <children>
                   <Label styleClass="section-title" text="Commentaire" />
-                  <TextArea fx:id="commentaireTextArea" editable="false" prefHeight="100.0" prefWidth="200.0" wrapText="true" />
+                  <TextArea fx:id="commentaireTextArea" editable="false" prefHeight="80.0" prefWidth="200.0" wrapText="true" />
                </children>
             </VBox>
          </children>

@@ -81,7 +81,6 @@ public class MesCoursController implements Initializable {
             new SimpleObjectProperty<>(param.getValue()));
         actionsColumn.setCellFactory(param -> new TableCell<Cours, Cours>() {
             private final Button voirSeancesButton = new Button("Voir séances");
-            private final Button ajouterSeanceButton = new Button("+ Séance");
             
             @Override
             protected void updateItem(Cours cours, boolean empty) {
@@ -95,20 +94,11 @@ public class MesCoursController implements Initializable {
                 // Configuration des boutons
                 voirSeancesButton.getStyleClass().add("button-secondary");
                 voirSeancesButton.setOnAction(event -> voirSeances(cours));
-                
-                ajouterSeanceButton.getStyleClass().add("button-primary");
-                ajouterSeanceButton.setOnAction(event -> ajouterSeance(cours));
-                
-                // Création d'un conteneur pour les boutons
-                HBox hbox = new HBox(10, voirSeancesButton, ajouterSeanceButton);
 
                 voirSeancesButton.setPrefWidth(160);  // Largeur préférée
                 voirSeancesButton.setPrefHeight(40);  // Hauteur préférée
 
-                ajouterSeanceButton.setPrefWidth(120);
-                ajouterSeanceButton.setPrefHeight(40);
-                hbox.setAlignment(Pos.CENTER);
-                setGraphic(hbox);
+                setGraphic(voirSeancesButton);
             }
         });
 
@@ -159,30 +149,4 @@ public class MesCoursController implements Initializable {
         }
     }
     
-    private void ajouterSeance(Cours cours) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass()
-                .getResource("/fxml/enseignant/AjoutSeance.fxml"));
-            Parent root = loader.load();
-            
-            AjoutSeanceController controller = loader.getController();
-            controller.setEnseignant(enseignant);
-            controller.setCoursPreselectionne(cours);
-            
-            Stage stage = new Stage();
-            stage.setTitle("Ajouter une séance");
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add("/css/common.css");
-            scene.getStylesheets().add("/css/enseignant.css");
-            stage.setScene(scene);
-            stage.show();
-            
-            // Rafraîchir les données après fermeture
-            stage.setOnHidden(e -> loadCours());
-        } catch (IOException e) {
-            System.err.println("Erreur lors du chargement de la vue d'ajout de séance: "
-                + e.getMessage());
-            e.printStackTrace();
-        }
-    }
 }

@@ -131,6 +131,7 @@ public class GestionFichesController implements Initializable {
                 exportButton.setOnAction(event -> exportFiche(fiche));
 
                 HBox hbox = new HBox(5, viewButton, exportButton);
+                hbox.setAlignment(Pos.CENTER); 
                 setGraphic(hbox);
             }
         });

@@ -29,8 +29,6 @@ public class AjoutUtilisateurController implements Initializable {
     @FXML private PasswordField motDePasseField;
     @FXML private PasswordField confirmMotDePasseField;
     @FXML private ComboBox<String> roleComboBox;
-    @FXML private HBox classeContainer;
-    @FXML private ComboBox<Classe> classeComboBox;
     @FXML private TextField nouvelleClasseField;
     @FXML private VBox nouvelleClasseContainer;
     @FXML private Button saveButton;
@@ -50,49 +48,17 @@ public class AjoutUtilisateurController implements Initializable {
         // Ajouter un écouteur pour afficher/masquer la sélection de classe
         roleComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if ("responsable_classe".equals(newVal)) {
-                classeContainer.setVisible(true);
-                classeContainer.setManaged(true);
                 nouvelleClasseContainer.setVisible(true);
                 nouvelleClasseContainer.setManaged(true);
             } else {
-                classeContainer.setVisible(false);
-                classeContainer.setManaged(false);
                 nouvelleClasseContainer.setVisible(false);
                 nouvelleClasseContainer.setManaged(false);
             }
         });
-        
-        // Initialiser la visibilité des containers
-        classeContainer.setVisible(false);
-        classeContainer.setManaged(false);
+
         nouvelleClasseContainer.setVisible(false);
         nouvelleClasseContainer.setManaged(false);
-        
-        // Charger les classes disponibles
-        loadClasses();
-    }
-    
-    private void loadClasses() {
-        try {
-            // Charger toutes les classes
-            List<Classe> classes = ClasseDAO.findAll();
-            classeComboBox.setItems(FXCollections.observableArrayList(classes));
-            
-            // Configurer l'affichage des classes
-            classeComboBox.setConverter(new javafx.util.StringConverter<Classe>() {
-                @Override
-                public String toString(Classe classe) {
-                    return classe == null ? "" : classe.getNom();
-                }
-                
-                @Override
-                public Classe fromString(String string) {
-                    return null;
-                }
-            });
-        } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger les classes", e.getMessage());
-        }
+
     }
     
     @FXML
@@ -119,11 +85,11 @@ public class AjoutUtilisateurController implements Initializable {
             return;
         }
         
-        // Si c'est un responsable, vérifier qu'une classe est sélectionnée ou qu'une nouvelle est fournie
+        // Si c'est un responsable, vérifier qu'une nouvelle est fournie
         if ("responsable_classe".equals(roleComboBox.getValue())) {
-            if (classeComboBox.getValue() == null && (nouvelleClasseField.getText() == null || nouvelleClasseField.getText().trim().isEmpty())) {
+            if ((nouvelleClasseField.getText() == null || nouvelleClasseField.getText().trim().isEmpty())) {
                 showAlert(Alert.AlertType.WARNING, "Classe requise", "Information de classe manquante",
-                        "Veuillez soit sélectionner une classe existante, soit fournir un nom pour une nouvelle classe.");
+                        "Veuillez fournir un nom pour une nouvelle classe.");
                 return;
             }
         }
@@ -155,12 +121,7 @@ public class AjoutUtilisateurController implements Initializable {
                             Responsable savedResp = responsables.get(0);
                             Classe classe;
                             
-                            // Soit utiliser une classe existante soit en créer une nouvelle
-                            if (classeComboBox.getValue() != null) {
-                                classe = classeComboBox.getValue();
-                                classe.setResponsableId(savedResp.getId());
-                                ClasseDAO.update(classe);
-                            } else if (nouvelleClasseField.getText() != null && !nouvelleClasseField.getText().trim().isEmpty()) {
+                            if (nouvelleClasseField.getText() != null && !nouvelleClasseField.getText().trim().isEmpty()) {
                                 // Créer une nouvelle classe
                                 classe = new Classe(0, nouvelleClasseField.getText().trim(), savedResp.getId());
                                 if (ClasseDAO.save(classe)) {

@@ -50,25 +50,25 @@
                   <VBox spacing="0.0" GridPane.columnIndex="2">
                      <children>
                         <Label styleClass="form-label" text="Classe" />
-                        <Label fx:id="classeLabel" styleClass="form-value" text="--" style="-fx-text-fill: #000; -fx-font-weight: normal; -fx-font-size: 12px"/>
+                        <Label fx:id="classeLabel" text="--" style="-fx-text-fill: #000; -fx-font-weight: normal; -fx-font-size: 12px"/>
                      </children>
                   </VBox>
                   <VBox spacing="0.0" GridPane.rowIndex="1">
                      <children>
                         <Label styleClass="form-label" text="Date" />
-                        <Label fx:id="dateLabel" styleClass="form-value" text="--" style="-fx-text-fill: #000; -fx-font-weight: normal; -fx-font-size: 12px"/>
+                        <Label fx:id="dateLabel" text="--" style="-fx-text-fill: #000; -fx-font-weight: normal; -fx-font-size: 12px"/>
                      </children>
                   </VBox>
                   <VBox spacing="0.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <children>
                         <Label styleClass="form-label" text="Durée" />
-                        <Label fx:id="dureeLabel" styleClass="form-value" text="--" style="-fx-text-fill: #000; -fx-font-weight: normal; -fx-font-size: 12px"/>
+                        <Label fx:id="dureeLabel" text="--" style="-fx-text-fill: #000; -fx-font-weight: normal; -fx-font-size: 12px"/>
                      </children>
                   </VBox>
                   <VBox spacing="0.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                      <children>
                         <Label styleClass="form-label" text="Statut" />
-                        <Label fx:id="statutLabel" styleClass="form-value" text="--" style="-fx-font-size: 10px"/>
+                        <Label fx:id="statutLabel" text="--" style="-fx-font-size: 10px"/>
                      </children>
                   </VBox>
                </children>

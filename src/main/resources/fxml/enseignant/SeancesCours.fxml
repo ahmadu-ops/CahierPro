@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="form-container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.enseignant.SeancesCoursController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="600.0" styleClass="form-container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.enseignant.SeancesCoursController">
    <top>
       <HBox alignment="CENTER_LEFT" prefHeight="80.0" spacing="15.0" styleClass="form-header" BorderPane.alignment="CENTER">
          <children>
@@ -39,19 +39,19 @@
                   <VBox spacing="5.0">
                      <children>
                         <Label styleClass="form-label" text="Classe" />
-                        <Label fx:id="classeLabel" styleClass="form-value" text="--" />
+                        <Label fx:id="classeLabel" style="-fx-text-fill: #000; -fx-font-weight: normal; -fx-font-size: 12px"/>
                      </children>
                   </VBox>
                   <VBox spacing="5.0" GridPane.columnIndex="1">
                      <children>
                         <Label styleClass="form-label" text="Volume horaire" />
-                        <Label fx:id="volumeHoraireLabel" styleClass="form-value" text="--" />
+                        <Label fx:id="volumeHoraireLabel" style="-fx-text-fill: #000; -fx-font-weight: normal; -fx-font-size: 12px"/>
                      </children>
                   </VBox>
                   <VBox spacing="5.0" GridPane.columnIndex="2">
                      <children>
                         <Label styleClass="form-label" text="Pourcentage de réalisation" />
-                        <Label fx:id="pourcentageLabel" styleClass="form-value" text="--" />
+                        <Label fx:id="pourcentageLabel" style="-fx-text-fill: #000; -fx-font-weight: normal; -fx-font-size: 12px"/>
                      </children>
                   </VBox>
                </children>

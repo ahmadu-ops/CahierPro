@@ -90,7 +90,7 @@ public class ChefDashboardController implements Initializable {
     private void handleUsersAction(ActionEvent event) {
         activateButton(usersBtn);
         pageTitle.setText("Gestion des Utilisateurs");
-        // Cette vue devrait être implémentée plus tard
+        
         loadView("/fxml/chef/GestionUtilisateurs.fxml");
     }
     

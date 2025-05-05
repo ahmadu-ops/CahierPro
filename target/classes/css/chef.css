@@ -254,9 +254,13 @@
 }
 
 /* Styles supplémentaires pour les formulaires et tableaux */
-.form-value {
+.form-label {
     -fx-font-weight: bold;
     -fx-font-size: 14px;
+}
+.form-value {
+    -fx-font-weight: normal;
+    -fx-font-size: 13px;
 }
 
 .section-title {

@@ -10,17 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="500.0" styleClass="form-container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.chef.AjoutUtilisateurController">
-   <top>
-      <HBox alignment="CENTER_LEFT" prefHeight="80.0" spacing="15.0" styleClass="form-header" BorderPane.alignment="CENTER">
-         <children>
-            <Label styleClass="form-title" text="Ajouter un Utilisateur" />
-         </children>
-         <padding>
-            <Insets left="30.0" right="30.0" />
-         </padding>
-      </HBox>
-   </top>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="500.0" styleClass="form-container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.chef.AjoutUtilisateurController">
    <center>
       <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0" styleClass="form-content" BorderPane.alignment="CENTER">
          <children>
@@ -60,15 +50,9 @@
                   <ComboBox fx:id="roleComboBox" prefHeight="40.0" prefWidth="400.0" promptText="Sélectionnez un rôle" styleClass="form-control" />
                </children>
             </VBox>
-            <HBox fx:id="classeContainer" managed="false" spacing="10.0" styleClass="form-group" visible="false">
-               <children>
-                  <Label styleClass="form-label" text="Classe *" />
-                  <ComboBox fx:id="classeComboBox" prefHeight="40.0" prefWidth="400.0" promptText="Sélectionnez une classe" styleClass="form-control" />
-               </children>
-            </HBox>
             <VBox fx:id="nouvelleClasseContainer" managed="false" spacing="10.0" styleClass="form-group" visible="false">
                <children>
-                  <Label styleClass="form-label" text="Nouvelle classe (si applicable)" />
+                  <Label styleClass="form-label" text="Nouvelle classe" />
                   <TextField fx:id="nouvelleClasseField" prefHeight="40.0" promptText="Entrez le nom de la nouvelle classe" styleClass="form-control" />
                </children>
             </VBox>
