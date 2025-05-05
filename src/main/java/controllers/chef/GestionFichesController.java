@@ -13,6 +13,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -107,6 +108,14 @@ public class GestionFichesController implements Initializable {
         actionsColumn.setCellFactory(param -> new TableCell<FichePedagogique, FichePedagogique>() {
             private final Button viewButton = new Button("Voir");
             private final Button exportButton = new Button("Exporter");
+
+            private final HBox hbox = new HBox(10, viewButton, exportButton); // espacement de 10
+
+            {
+                hbox.setAlignment(Pos.CENTER); // Centrer les boutons dans le HBox
+                viewButton.getStyleClass().add("button-secondary");
+                exportButton.getStyleClass().add("button-primary");
+            }
 
             @Override
             protected void updateItem(FichePedagogique fiche, boolean empty) {

@@ -91,3 +91,7 @@
 .text-field:focused, .password-field:focused, .text-area:focused {
     -fx-border-color: #0a6d4c;
 }
+
+.table-cell {
+    -fx-alignment: CENTER;
+}

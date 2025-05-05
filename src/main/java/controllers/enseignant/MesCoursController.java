@@ -12,6 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -99,7 +100,14 @@ public class MesCoursController implements Initializable {
                 ajouterSeanceButton.setOnAction(event -> ajouterSeance(cours));
                 
                 // Création d'un conteneur pour les boutons
-                HBox hbox = new HBox(5, voirSeancesButton, ajouterSeanceButton);
+                HBox hbox = new HBox(10, voirSeancesButton, ajouterSeanceButton);
+
+                voirSeancesButton.setPrefWidth(160);  // Largeur préférée
+                voirSeancesButton.setPrefHeight(40);  // Hauteur préférée
+
+                ajouterSeanceButton.setPrefWidth(120);
+                ajouterSeanceButton.setPrefHeight(40);
+                hbox.setAlignment(Pos.CENTER);
                 setGraphic(hbox);
             }
         });

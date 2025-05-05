@@ -24,11 +24,10 @@
       </HBox>
       <TableView fx:id="utilisateursTableView" prefHeight="500.0" VBox.vgrow="ALWAYS">
         <columns>
-          <TableColumn fx:id="nomPrenomColumn" prefWidth="200.0" text="Nom et Prénom" />
-          <TableColumn fx:id="emailColumn" prefWidth="200.0" text="Email" />
-          <TableColumn fx:id="roleColumn" prefWidth="150.0" text="Rôle" />
-          <TableColumn fx:id="classeColumn" prefWidth="150.0" text="Classe" />
-          <TableColumn fx:id="actionsColumn" prefWidth="150.0" text="Actions" />
+          <TableColumn fx:id="nomPrenomColumn" text="Nom et Prénom" />
+          <TableColumn fx:id="emailColumn" text="Email" />
+          <TableColumn fx:id="roleColumn" text="Rôle" />
+          <TableColumn fx:id="classeColumn" text="Classe" prefWidth="150.0" />
         </columns>
       </TableView>
    </children>

@@ -33,7 +33,6 @@ public class GestionUtilisateursController implements Initializable {
     @FXML private TableColumn<Utilisateur, String> emailColumn;
     @FXML private TableColumn<Utilisateur, String> roleColumn;
     @FXML private TableColumn<Utilisateur, String> classeColumn;
-    @FXML private TableColumn<Utilisateur, Utilisateur> actionsColumn;
 
     private Utilisateur utilisateur;
 
@@ -55,11 +54,13 @@ public class GestionUtilisateursController implements Initializable {
                     roleAffiche = "Enseignant";
                     break;
                 case "responsable_classe":
-                    roleAffiche = "Responsable de Classe";
+                    roleAffiche = "Responsable";
                     break;
             }
             return new SimpleStringProperty(roleAffiche);
         });
+
+        classeColumn.setVisible(false);
         classeColumn.setCellValueFactory(data -> {
             if (data.getValue() instanceof Responsable) {
                 Responsable resp = (Responsable) data.getValue();
@@ -68,7 +69,6 @@ public class GestionUtilisateursController implements Initializable {
             }
             return new SimpleStringProperty("-");
         });
-        actionsColumn.setVisible(false);
 
         // Configurer le combobox de filtre
         roleComboBox.setItems(FXCollections.observableArrayList(
@@ -81,8 +81,7 @@ public class GestionUtilisateursController implements Initializable {
             (observable, oldValue, newValue) -> {
                 if (newValue != null) {
                     filtrerUtilisateurs(newValue);
-                    classeColumn.setVisible("Responsables de classe".equals(newValue)
-                        || "Tous les utilisateurs".equals(newValue));
+                    classeColumn.setVisible("Responsables de classe".equals(newValue));
                 }
             });
 
