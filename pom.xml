@@ -14,18 +14,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>23</maven.compiler.source>
         <maven.compiler.target>23</maven.compiler.target>
-        <javafx.version>21</javafx.version>
+        <javafx.version>24</javafx.version>
+        <javafx.lib>C:/javafx-sdk-24/lib</javafx.lib>
     </properties>
 
     <dependencies>
-        <!-- Dépendance pour MySQL Connector/J -->
+        <!-- MySQL Connector/J -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.33</version>
         </dependency>
-        
-        <!-- Dépendances pour JavaFX -->
+
+        <!-- JavaFX dependencies -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -46,8 +47,8 @@
             <artifactId>javafx-base</artifactId>
             <version>${javafx.version}</version>
         </dependency>
-        
-        <!-- Dépendance pour iText (génération de PDF) -->
+
+        <!-- iText PDF generation -->
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itextpdf</artifactId>
@@ -57,7 +58,7 @@
 
     <build>
         <plugins>
-            <!-- Plugin Maven Compiler pour Java -->
+            <!-- Maven Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -68,16 +69,20 @@
                     <release>23</release>
                 </configuration>
             </plugin>
-            
-            <!-- Plugin JavaFX Maven -->
+
+            <!-- JavaFX Maven Plugin -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
                     <mainClass>main.MainApp</mainClass>
+                    <modulePath>${javafx.lib}</modulePath>
                     <options>
-                        <!-- Options supplémentaires si nécessaire -->
+                        <option>--module-path</option>
+                        <option>${javafx.lib}</option>
+                        <option>--add-modules</option>
+                        <option>javafx.controls,javafx.fxml</option>
                         <option>--add-opens</option>
                         <option>java.base/java.lang=ALL-UNNAMED</option>
                         <option>--add-exports</option>
@@ -86,7 +91,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Plugin pour créer un JAR exécutable avec dépendances -->
+            <!-- Maven Shade Plugin for executable JAR -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
