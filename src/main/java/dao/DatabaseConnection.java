@@ -7,9 +7,9 @@ import java.sql.Statement;
 
 public class DatabaseConnection {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/gestion_cahier_texte"; // Remplace "nom_de_ta_base" par le nom de ta base de données
-    private static final String USER = "root"; // Remplace par ton nom d'utilisateur MySQL
-    private static final String PASSWORD = "   "; // Remplace par ton mot de passe MySQL, si nécessaire
+    private static final String URL = "jdbc:mysql://localhost:3306/gestion_cahier_texte";
+    private static final String USER = "root";
+    private static final String PASSWORD = ""; 
 
     // Méthode pour obtenir la connexion
     public static Connection getConnection() throws SQLException {
@@ -22,15 +22,4 @@ public class DatabaseConnection {
         }
     }
 
-    // Méthode pour tester la connexion
-    public static void main(String[] args) {
-        try (Connection connection = getConnection()) {
-            // Exemple d'utilisation de la connexion : exécuter une requête simple
-            Statement stmt = connection.createStatement();
-            stmt.executeQuery("SELECT 1"); // Requête simple pour vérifier la connexion
-            System.out.println("Connexion réussie !");
-        } catch (SQLException e) {
-            System.out.println("Erreur de connexion : " + e.getMessage());
-        }
-    }
 }
