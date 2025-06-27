@@ -124,6 +124,37 @@ public class PDFGenerator {
     }
 
     /**
+     * Génère un nom de fichier PDF basé sur l'intitulé du cours
+     * @param intituleCours L'intitulé du cours
+     * @return Le nom de fichier formaté
+     */
+    public static String genererNomFichier(String intituleCours) {
+        if (intituleCours == null || intituleCours.trim().isEmpty()) {
+            return "cours.pdf";
+        }
+        
+        // Convertir en minuscules et remplacer les espaces et caractères spéciaux par des tirets
+        String nomFichier = intituleCours.toLowerCase()
+            .replaceAll("[àáâãäå]", "a")
+            .replaceAll("[èéêë]", "e")
+            .replaceAll("[ìíîï]", "i")
+            .replaceAll("[òóôõö]", "o")
+            .replaceAll("[ùúûü]", "u")
+            .replaceAll("[ýÿ]", "y")
+            .replaceAll("[ç]", "c")
+            .replaceAll("[^a-z0-9]", "-")  // Remplacer tout ce qui n'est pas alphanumerique par un tiret
+            .replaceAll("-+", "-")        // Remplacer les tirets multiples par un seul
+            .replaceAll("^-|-$", "");     // Supprimer les tirets en début et fin
+        
+        // S'assurer qu'on a un nom valide
+        if (nomFichier.isEmpty()) {
+            nomFichier = "cours";
+        }
+        
+        return nomFichier + ".pdf";
+    }
+
+    /**
      * Ajoute l'en-tête institutionnel au document
      */
     private static void ajouterEntete(Document document) throws DocumentException, IOException {

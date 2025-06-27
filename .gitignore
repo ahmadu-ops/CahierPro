@@ -1,8 +1,11 @@
-# Fichiers compilés Java
-*.class
+# VS Code
+/.vscode/
 
-# Répertoire de compilation Maven ou Gradle
+# Maven compilation
 /target/
 
 # app-image
 /app-image/
+
+# diagrams
+/diagrams/

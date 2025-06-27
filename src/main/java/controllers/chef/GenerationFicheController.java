@@ -149,7 +149,7 @@ public class GenerationFicheController implements Initializable {
             
             if (fiche != null) {
                 // Demander à l'utilisateur où sauvegarder le fichier PDF
-                exportFiche(fiche);
+                exportFiche(fiche, selectedCours);
             } else {
                 showAlert(Alert.AlertType.ERROR, "Erreur", null, "Impossible de générer la fiche pédagogique.");
             }
@@ -159,16 +159,21 @@ public class GenerationFicheController implements Initializable {
         }
     }
     
-    private void exportFiche(FichePedagogique fiche) {
+    private void exportFiche(FichePedagogique fiche, Cours cours) {
         try {
             // Créer un FileChooser pour permettre à l'utilisateur de choisir où sauvegarder le PDF
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Enregistrer la fiche pédagogique");
             
-            // Proposer un nom de fichier par défaut
-            String defaultFileName = "fiche_" + fiche.getId() + "_" + 
-                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + ".pdf";
-            fileChooser.setInitialFileName(defaultFileName);
+            // Définir le répertoire initial
+            File initialDirectory = new File("D:\\Documents\\Fiches_Peds");
+            if (initialDirectory.exists() && initialDirectory.isDirectory()) {
+                fileChooser.setInitialDirectory(initialDirectory);
+            }
+            
+            // Générer le nom de fichier basé sur l'intitulé du cours
+            String nomFichier = PDFGenerator.genererNomFichier(cours.getIntitule());
+            fileChooser.setInitialFileName(nomFichier);
             
             // Définir les filtres pour n'afficher que les fichiers PDF
             FileChooser.ExtensionFilter extFilter = 
@@ -182,24 +187,13 @@ public class GenerationFicheController implements Initializable {
                 String filePath = file.getAbsolutePath();
                 
                 // Générer le PDF à l'emplacement choisi
-                PDFGenerator.genererPDF(fiche.getId(), filePath);
-                closeWindow();
+                boolean success = PDFGenerator.genererPDF(fiche.getId(), filePath);
                 
-            //     if (success) {
-            //         // Le PDF est déjà ouvert automatiquement par la méthode genererPDF
-                    
-            //         // Afficher un message de confirmation
-            //         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            //         alert.setTitle("Succès");
-            //         alert.setHeaderText("La fiche a été exportée avec succès");
-            //         alert.setContentText("Le document a été généré et ouvert dans votre lecteur PDF.");
-                    // alert.showAndWait();
-                    
-            //         // Fermer la fenêtre
-                    
-            //     } else {
-            //         showAlert(Alert.AlertType.ERROR, "Erreur", null, "Impossible d'exporter la fiche en PDF.");
-            //     }
+                if (success) {                
+                    closeWindow();
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "Erreur", null, "Impossible d'exporter la fiche en PDF.");
+                }
             }
             // Si l'utilisateur annule, ne rien faire
             
