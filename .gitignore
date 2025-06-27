@@ -4,7 +4,5 @@
 # Répertoire de compilation Maven ou Gradle
 /target/
 
-# Configurations d'IDE (optionnel, mais conseillé)
-.idea/
-*.iml
-*.log
+# app-image
+/app-image/

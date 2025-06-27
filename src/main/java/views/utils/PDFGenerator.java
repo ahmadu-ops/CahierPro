@@ -141,7 +141,7 @@ public class PDFGenerator {
         logoCell.setBorder(Rectangle.NO_BORDER);
         
         // Charger l'image du logo
-        String logoPath = "src\\main\\resources\\images\\logo-universite.jpg";
+        String logoPath = "D:\\Documents\\GestionCahierTexte\\src\\main\\resources\\images\\logo-universite.jpg";
         Image logo = Image.getInstance(logoPath);
         // Redimensionner l'image si nécessaire
         logo.scaleToFit(70, 70);
@@ -179,7 +179,7 @@ public class PDFGenerator {
         flagCell.setBorder(Rectangle.NO_BORDER);
         
         // Charger l'image du drapeau
-        String drapeauPath = "src\\main\\resources\\images\\drapeau-pays.jpg";
+        String drapeauPath = "D:\\Documents\\GestionCahierTexte\\src\\main\\resources\\images\\drapeau-pays.jpg";
         Image drapeau = Image.getInstance(drapeauPath);
         // Redimensionner l'image si nécessaire
         drapeau.scaleToFit(70, 70);
